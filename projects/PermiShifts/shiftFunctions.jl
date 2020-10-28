@@ -18,80 +18,85 @@ module shiftFuntions
     end
 
     function makeshifts()
-        
+        avail_top_left_row = header_thickness + 1 #+1 because "the next row"
+        staffnum_location = (spacing_to_staff_number, nshifts + avail_top_left_row + tables_to_info)
+        avail_bot_right_row = nshifts + header_thickness
+        avail_table_distance = nworkdays + table_separator_width + 1 #+1 for column with times
+
+
         Taro.init()
 
-        # number of staff (B27 on sheet)
+        # number of staff (staffnum_location on sheet (eg. B27 -> (2,27)))
         staff = Integer(getCellValue(getCell(getRow(getSheet(
-                    Workbook("availability.xlsx"), "availability"), 27), 2)))
+                    Workbook(input_path), availability_sheet_name), staffnum_location[2]), staffnum_location[1])))
 
         # get staff availability tables
-        # top left cell on row 2, bot right cell on row 23
-        # each table separated by 7 cells
+        # top left cell on row 2, bot right cell on row avail_bot_right_row
+        # each table separated by avail_table_distance cells
 
         staff_array = []                        # with preference/availability data
         staff_dict  = Dict{Integer, String}()   # with names of staff
 
         for i in 0:staff - 1
-            range = string(numtocol(7 * i + 2),
+            range = string(numtocol(avail_table_distance * i + 2),
                             "2:",
-                            numtocol(7 * i + 6),
-                            "23")
+                            numtocol(avail_table_distance * i + 6),
+                            string(avail_bot_right_row))
             push!(staff_array,
-                DataFrame(Taro.readxl("availability.xlsx", "availability",
+                DataFrame(Taro.readxl(input_path, availability_sheet_name,
                 range, header = false)))
             staff_dict[i + 1] = String(getCellValue(getCell(getRow(getSheet(
-                Workbook("availability.xlsx"), "availability"), 0), 7 * i)))
+                Workbook(input_path), availability_sheet_name), 0), avail_table_distance * i)))
         end
 
         # create 3D availability array
-        av_matrix = Array{Int8}(undef, 22, 5, staff)
+        av_matrix = Array{Int8}(undef, nshifts, nworkdays, staff)
 
         for k in 1:staff
-            for i in 1:22
-                for j in 1:5
+            for i in 1:nshifts
+                for j in 1:nworkdays
                     av_matrix[i,j,k] = Matrix(staff_array[k])[i,j]
                 end
             end
         end
 
         # optimization model
-        m = Model(solver = GurobiSolver(Presolve = 0))
+        m = Model(Gurobi.Optimizer)
+        set_optimizer_attribute(m, "Presolve", 0)
 
-        # 23 x 5 x staff binary assignment 3d matrix
+        # 23 x nworkdays x staff binary assignment 3d matrix
         # 1 if employee k assigned to shift (i,j), 0 otherwise
-        @variable(m, x[1:22, 1:5, 1:staff], Bin)
+        @variable(m, x[1:nshifts, 1:nworkdays, 1:staff], Bin)
 
         # objective: rewards continuous shifts
-        # special cases k = 1 (placeholder)
-        #               k = 2 (Senior CA)
+        # special case k = 1 (placeholder)
 
         @objective(m, Max,
             sum(av_matrix[i, j, k] * x[i, j, k] +
                 x[i, j, k]  * (10 * av_matrix[i + 1, j, k] * x[i + 1, j, k]
                             +  10 * av_matrix[i - 1, j, k] * x[i - 1, j, k])
-                for i in 2:21, j in 1:5, k in 3:staff)
-            # special cases k = 1,2
-            + sum(av_matrix[i, j, k] * x[i, j, k] for i in 1:22, j in 1:5, k in 1:2))
+                for i in 2:(nshifts-1), j in 1:nworkdays, k in 2:staff)
+            # special cases k = 1
+            + sum(av_matrix[i, j, k] * x[i, j, k] for i in 1:nshifts, j in 1:nworkdays, k in 1:1))
 
         # constraints
 
         # cons1: each person (except special cases k = 1,2) works 10hrs per week
-        for k in 3:staff
-            @constraint(m, sum(x[i, j, k] for i in 1:22, j in 1:5) == 20)
+        for k in 2:staff
+            @constraint(m, sum(x[i, j, k] for i in 1:nshifts, j in 1:nworkdays) == 20)
         end
 
         # cons1.1: senior CA = 2 works max 13hrs per week (no min)
-        @constraint(m, sum(x[i, j, 2] for i in 1:22, j in 1:5) <= 26)
+        #@constraint(m, sum(x[i, j, 2] for i in 1:nshifts, j in 1:nworkdays) <= 26)
 
         # cons1.2: senior CA = 2 works max 2 opening/closing shifts
-        @constraint(m, sum(x[i, j, 2] for i in [1, 22], j in 1:5) <= 2)
+        #@constraint(m, sum(x[i, j, 2] for i in [1, nshifts], j in 1:nworkdays) <= 2)
 
         # cons2: 1-2 people working at any given time
         #   exceptions: opening/closing
         #               weekly CA meeting (Wed 16:00-17:30)
-        for i in 2:21
-            for j in 1:5
+        for i in 2:(nshifts-1)
+            for j in 1:nworkdays
                 if j == 3 && i in 17:19 # (Wed 16:00-17:30)
                     continue
                 else
@@ -102,8 +107,8 @@ module shiftFuntions
         end
 
         # cons2.1: 1 person per opening or closing shift
-        for i in [1, 2, 21, 22]
-            for j in 1:5
+        for i in [1, 2, (nshifts-1), nshifts]
+            for j in 1:nworkdays
                 @constraint(m, sum(x[i, j, k] for k in 1:staff) == 1)
             end
         end
@@ -116,8 +121,8 @@ module shiftFuntions
         end
 
         # cons3: each shift is at least 1hr
-        for i in 2:21
-            for j in 1:5
+        for i in 2:(nshift-1)
+            for j in 1:nworkdays
                 for k in 1:staff
                     @constraint(m, x[i - 1, j, k] + x[i + 1, j, k] >= x[i, j, k])
                 end
@@ -125,27 +130,27 @@ module shiftFuntions
         end
 
         # cons3.1: edge cases
-        for j in 1:5
+        for j in 1:nworkdays
             for k in 1:staff
                 @constraint(m, x[2, j, k] >= x[1, j, k])
-                @constraint(m, x[21, j, k] >= x[22, j, k])
+                @constraint(m, x[(nshifts-1), j, k] >= x[nshifts, j, k])
             end
         end
 
         # !!! cons4: each shift is at most 4hrs (may be unnecessary)
 
-        status = solve(m)
+        status = optimize!(m)
 
         println("Objective value: ", getobjectivevalue(m))
-        assn_array_3d = Array{Int64}(getvalue(x))
+        assn_array_3d = Array{Int64}(getvalue.(x))
 
         # create final assignment array
-        assn_array_2d       = Array{Array{Int64, 1}}(undef, 22, 5)
-        assn_array_2d_names = Array{Array{String, 1}}(undef, 22, 5)
+        assn_array_2d       = Array{Array{Int64, 1}}(undef, nshifts, nworkdays)
+        assn_array_2d_names = Array{Array{String, 1}}(undef, nshifts, nworkdays)
 
         # flatten 3d matrix into 2d array
-        for i in 1:22
-            for j in 1:5
+        for i in 1:nshifts
+            for j in 1:nworkdays
                 staff_in_ij         = []
                 staff_in_ij_names   = []
                 for k in 1:staff
@@ -163,17 +168,17 @@ module shiftFuntions
 
         # create new workbook with assignment matrix
         w = Workbook()
-        s = createSheet(w, "Assignments")
+        s = createSheet(w, assignment_sheet_name)
 
-        for i in 1:22
+        for i in 1:nshifts
             r = createRow(s, i)
-            for j in 1:5, k in 1:staff
-                c = createCell(r, 7 * (k - 1) + j)
+            for j in 1:nworkdays, k in 1:staff
+                c = createCell(r, avail_table_distance * (k - 1) + j)
                 setCellValue(c, assn_array_3d[i, j, k])
             end
         end
 
-        write("assn-matrix.xlsx", w)
+        write(output_path, w)
 
         #=
         Discussion:
