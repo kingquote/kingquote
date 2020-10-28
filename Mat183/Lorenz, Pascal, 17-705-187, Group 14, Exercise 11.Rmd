@@ -1,0 +1,39 @@
+---
+title: "Lorenz, Pascal, 17-705-187, Group 14, Exercise 11"
+output: word_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Task 5
+---
+
+##a
+```{r}
+data <- read.table("http://stat.ethz.ch/Teaching/Datasets/banknoten.dat",header=TRUE)
+real <- data$Laenge[1:100]
+fake <- data$Laenge[101:200] #just to make my life a little easier instead of typing it out every time
+t.test(real, mu=215)
+t.test(fake, mu=215) #I use the default two-sided test, becaue we are testing for general differences of the mean, not specifically higher or lower values
+```
+These results show in multiple ways that the money marked as fake is actually fake:
+1. The P-value for the mean of the sample of real value is very high (with 0-hypothesis of it being real money with mean length 215), while the P-value for the fake one is low (below 1%) with the same H0.
+2. The true mean of 215 is contained within the 95 percent confidence interval, while the interval for the fake money does not overlap 215.
+
+
+##b
+```{r}
+plot(density(fake),type="l",col="red",main="Distribution",xlab="Lenght")
+lines(density(real), col="green")
+abline(v=mean(real), col="green")
+abline(v=mean(fake), col="red")
+legend("topright",c("Real","Fake"), col=c("green","red"),pch=16)
+```
+
+
+##c
+```{r}
+t.test(real,fake, var.equal=TRUE) #var.equal=TRUE because of the task, though the difference is minimal in this case anyways (variance of real and fake money is very close)
+```

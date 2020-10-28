@@ -1,0 +1,249 @@
+From:
+
+ON GROWTH AND FORM 
+
+
+BY 
+
+
+D'ARCY WENTWORTH THOMPSON 
+
+1917
+
+
+PREFATORY NOTE 
+
+THIS book of mine has little need of preface, for indeed it is 
+" all preface " from beginning to end. I have written it as 
+an easy introduction to the study of organic Form, by methods 
+which are the common-places of physical science, which are by 
+no means novel in their application to natural history, but which 
+nevertheless naturalists are little accustomed to employ. 
+
+.
+.
+.
+.
+
+
+
+CHAPTER V 
+
+THE FORMS OF CELLS 
+
+Protoplasm, as we have already said, is a fluid or a semi-fluid 
+substance, and we need not try to describe the particular properties 
+of the colloid or jelly-like 'substances to which it is allied, or rather
+the characteristics of the "colloidal state" in which it and they 
+exist; we should find it no easy matter. Nor need we appeal to 
+precise theoretical definitions of fluidity, lest we come into a 
+debatable land. It is in the most general sense that protoplasm 
+is "fluid." As Graham said (of colloid matter in general), "its 
+softness partakes of fluidity, and enables the colloid to become a 
+vehicle for liquid diffusion, like water itself J." When we can deal 
+with protoplasm in sufficient quantity we see its particles 
+move freely through it, air-bubbles and liquid droplets shew round 
+or spherical within it; and we shall have much to say about other 
+phenomena manifested by its own surface, which are those especially 
+characteristic of liquids. It may encompass and contain solid 
+bodies, and it may "secrete" solid substances within or around 
+itself; and it often happens in the complex living organism that 
+these solid substances, such as shell or nail or horn or feather, 
+remain when the protoplasm which formed them is dead and gone. 
+But the protoplasm itself is fluid or semi-fluid, and permits of free 
+(though not necessarily rapid) diffusion and easy convection of 
+particles within itself, which simple fact is of elementary importance 
+in connection with form, throwing light on what seem to be common 
+characteristics and pecularities of the forms of living things. 
+
+Much has been done, and more said, about the nature of protoplasm since 
+this book was written. Calling cytoplasm the cell-protoplasm after deduction 
+of chloroplasts and other gross inclusions, we find it to contain fats, proteins, 
+lecithin and some other substances combined with much water (up to 
+97 per cent.) to form a sort of watery gel. The microscopic structures 
+attributed to it, alveolar, granular or fibrillar, are inconstant or invalid; 
+but it does appear to possess an invisible or submicroscopic structure, 
+distinguishing it from an ordinary colloid gel, and forming a quasi-solid 
+framework or reticulum. This framework is based on proteid macromolecules, 
+in the form of polypeptide chains, of great length and carrying in side-chains 
+other organic constituents of the cytoplasm. The polymerised units 
+represent the micellae which the genius of Nageli predicted or postulated 
+more than sixty years ago; and we may speak of a "micellar framework" 
+as representing in our cytoplasm the dispersed phase of an ordinary colloid. 
+In short, as the cytoplasm is neither true fluid not true solid, neither is it true 
+colloid in the ordinary sense. Its micellar structure gives it a certain rigidity 
+or tendency to retain its shape, a certain plasticity and tensile strength, a 
+certain ductility or capacity to be drawn out in threads; but yet leaves it 
+with a permeability (or semi-permeability), a capacity to swell by imbibition, 
+above all an ability to stream and flow, which justify our calling it "fluid 
+or semi-fluid," and account for its exhibition of surface-tension and other 
+capillary phenomena. 
+
+The older naturalists, in discussing the differences between organic and 
+inorganic bodies, laid stress upon the circumstance that the latter grow by 
+"agglutination," and the former by what they termed "intussusception." 
+The contrast is true; but it applies rather to solid or crystalline bodies as 
+compared with colloids of all kinds, whether living or dead. But it so happens 
+that the great majority of colloids are of organic origin; and out of them our 
+bodies, and our food, and the very clothes we wear, are almost wholly made. 
+
+A crystal "grows" by deposition of new molecules, one by one 
+and layer by layer, each one superimposed on the solid substratum 
+already formed. Each particle would seem to be influenced only 
+by the particles in its immediate neighbourhood, and to be in 
+a state of freedom and independence from the influence, either 
+direct or indirect, of its remoter neighbours. So Lavoisier was 
+the first to say. And as Kelvin and others later on explained 
+the formation and the resulting forms of crystals, so wo beheve 
+that each added particle takes up its position in relation to its 
+immediate neighbours already arranged, in the holes and corners 
+that their arrangement leaves, and in closest contact with the 
+greatest number; hence we may repeat or imitate this process of 
+arrangement, with great or apparently even with precise accuracy 
+(in the case of the simpler crystalhne systems), by piling up spherical 
+pills or grains of shot. In so doing, we must have regard to the 
+fact that each particle must drop into the place where it can go 
+most easily, or where no easier place offers. In more technical 
+language, each particle is free to take up, and does take up, its 
+position of least potential energy relative to those already there: 
+in other words, for each particle motion is induced until the energy 
+of the system is so distributed that no tendency or resultant force 
+remains to move it more. This has been shewn to lead to the 
+production of plane surfaces (in all cases where, by the hmitation 
+of material, surfaces must occur); where we have planes, there 
+straight edges and solid angles must obviously occur also, and, if 
+equihbrium is to follow, must occur symmetrically. Our pihng up 
+of shot to make mimic crystals gives us visible demonstration that 
+the result is actually to obtain, as in the natural crystal, plane 
+surfaces and sharp angles symmetrically disposed. 
+
+But the living cell grows in a totally different way, very much 
+as a piece of glue swells up in water, by "imbibition," or by inter- 
+penetration into and throughout its entire substance. The semi- 
+fluid colloid mass takes up water, partly to combine chemically 
+with its individual molecules; partly by physical diffusion into 
+the interstices between molecules or micellae, and partly, as it would 
+seem, in other ways; so that the entire phenomenon is a complex 
+and even an obscure one. But, so far as we are concerned, the 
+net result is very simple. For the equilibrium, or tendency to 
+equilibrium, of fluid pressure in all parts of its interior while the 
+process of imbibition is going on, the constant rearrangement of its 
+fluid mass, the contrast in short with the crystalhne method of 
+growth where each particle comes to rest to move (relatively to the 
+whole) no more, lead the mass of jelly to swell up very much as a 
+bladder into which we blow air, and so, by a graded and harmonious 
+distribution of forces, to assume everywhere a rounded and more 
+or less bubble-like external form. So, when the same school of 
+older naturalists called attention to a new distinction or contrast of 
+form between organic and inorganic objects, in that the contours 
+of the former tended to roundness and curvature, and those of the 
+latter to be bounded by straight lines, planes and sharp angles, we 
+see that this contrast was not a new and different one, but only 
+another aspect of their former statement, and an immediate con- 
+sequence of the difference between the processes of agglutination 
+and intussusception. 
+
+So far then as growth goes on undisturbed by pressure or other 
+external force, the fluidity of the protoplasm, its mobility internal 
+and external, and the way in which particles move freely hither 
+and thither within, all manifestly tend to the production of swelling, 
+rounded surfaces, and to their great predominance over plane sur- 
+faces in the contours of the organism. These rounded contours 
+will tend to be preserved for a while, in the case of naked protoplasm 
+by its viscosity, and in presence of a cell-wall by its very lack of 
+fluidity. In a general way, the presence of curved boundary 
+surfaces will be especially obvious in the unicellular organisms, and 
+generally in the external form of all organisms, and wherever 
+mutual pressure between adjacent cells, or other adjacent parts, 
+has not come into play to flatten the rounded surfaces into planes. 
+
+The swelling of any object, organic or inorganic, living or dead, is bound to 
+be influenced by any lack of structural symmetry or homogeneity. We 
+may take it that all elongated structures, such as hairs, fibres of silk or cotton, 
+fibrillae of tendon and connective tissue, have by virtue of their elongation 
+an invisible as well as a visible polarity. Moreover, the ultimate fibrils are 
+apt to be invested by a protein different from the "collagen" within, and 
+liable to swell more or to swell less. In ordinary tendons there is a "reticular 
+sheath," which swells less, and is apt to burst under pressure from within; 
+it breaks into short lengths, and when the strain is relieved these roll back, 
+and form the familiar annuli. Another instance is the tendency to swell of 
+the "macro- molecules" of many polymerised organic bodies, proteins among 
+them. 
+
+But the rounded contours which are assumed and exhibited by 
+a piece of hard glue when we throw it into water and see it expand 
+as it sucks the water up, are not near so regular nor so beautiful as 
+are those which appear when we blow a bubble, or form a drop, or 
+even pour water into an elastic bag. For these curving contours 
+depend upon the properties of the bag itself, of the film or membrane 
+which contains the mobile gas, or which contains or bounds the 
+mobile liquid mass. And hereby, in the case of the fluid or semifluid 
+mass, we are introduced to the subject of surface-tension: of which 
+indeed we have spoken in the preceding chapter, but which we must 
+now examine with greater care. 
+
+Among the forces which determine the forms of cells, whether 
+they be solitary or arranged in contact with one another, this force 
+of surface-tension is certainly of great, and is probably of paramount, 
+importance. But while we shall try to separate out the phenomena 
+which are directly due to it, we must not forget that, in each 
+particular case, the actual conformation which we study may be, 
+and usually is, the more or less complex resultant of surface-tension 
+acting together with gravity, mechanical pressure, osmosis, or other 
+physical forces. The peculiar beauty of a soap-bubble, solitary or 
+in collocation, depends on the absence (to all intents and purposes) 
+of these alien forces from the field; hence Plateau spoke of the films 
+which were the subject of his experiments as "lames fluides sans 
+pesanteur.'' The resulting form is in such a case so pure, and simple 
+that we come to look on it as wellnigh a mathematical abstraction. 
+
+Surface-tension, then, is that force by which we explain the form 
+of a drop or of a bubble, of the surfaces external and internal of 
+a "froth" or collocation of bubbles, and of many other things of 
+like nature and in like circumstances. It is a property of liquids 
+(in the sense at least with which our subject is concerned), and it 
+is manifested at or very near the surface, where the liquid comes 
+into contact with another liquid, a solid or a gas. We note here 
+that the term surface is to be interpreted in a wide sense; for 
+wherever we have solid particles embedded in a fluid, wherever we 
+have a non-homogeneous fluid or semi-fluid, or a "two-phase colloid " 
+such as a particle of protoplasm, wherever we have the presence of 
+"impurities" as in a mass of molten metal, there we have always 
+to bear in mind the existence of surfaces and of surface-phenomena, 
+not only on the exterior of the mass but also throughout its inter- 
+stices, wherever like and unlike meet. 
+
+A liquid in the mass is devoid of structure; it is homogeneous, and 
+without direction or polarity. But the very concept of surface- 
+tension forbids this to be true of the surface-layer of a body of liquid, 
+or of the "interphase" between two liquids, or of any film, bubble, 
+drop, or capillary jet or stream. In all these cases, and more empha- 
+tically in the case of a "monolayer," even the liquid has a structure 
+of its own; and we are reminded once again of how largely the living 
+organism, whether high or low, is composed of colloid matter in 
+precisely such forms and structural conditions. 
+
+Surface-tension is due to molecular force: to force, that is to say, 
+arising from the action of one molecule upon another; and since 
+we can only ascribe a small "sphere of action" to each several 
+molecule, this force is manifested only within a narrow range. 
+Within the interior of the liquid mass we imagine that such molecular 
+interactions negative one another; but at and near the free surface, 
+within a layer or film approximately equal to the range of the 
+molecular force - or to the radius of the aforesaid " sphere of action " 
+- there is a lack of equilibrium and a consequent manifestation of 
+force. 
+
+The action of the molecular forces has been variously explained. 
+But one simple explanation (or mode of statement) is that the 
+molecules of the surface-layer are being constantly attracted into 
+the interior by such as are just a little more deeply situated; the 
+surface shrinks as molecules keep quitting it for the interior, and 
+this surface-shrinkage exhibits itself as a surface-tension. The process 
+continues till it can go no farther, that is to say until the surface 
+itself becomes a "minimal area." This is a sufficient description 
+of the phenomenon in cases where a portion of liquid is subject to 
+no other than its own molecular forces, and (since the sphere has, 
+of all solids, the least surface for a given volume) it accounts for 
+the spherical form of the raindrop, of the grain of shot, or of the 
+living cell in innumerable simple organisms. 

@@ -1,0 +1,53 @@
+LOCUS       F8RBX8_PYTMO             226 aa                     UNK 21-SEP-2011
+DEFINITION  RecName: Full=ATP synthase subunit a
+            {ECO:0000256|RuleBase:RU004450};.
+ACCESSION   F8RBX8
+VERSION     F8RBX8
+DBLINK      EMBL: HM581978
+            RefSeq: YP_004733490.1
+            GeneID: 10964537
+            CTD: 4508
+            GO: GO: 0016021
+            GO: GO: 0005743
+            GO: GO: 0045263
+            GO: GO: 0015078
+            GO: GO: 0015986
+            Gene3D: 1.20.120.220
+            InterPro: IPR000568
+            InterPro: IPR023011
+            InterPro: IPR035908
+            Pfam: PF00119
+            PRINTS: PR00123
+            SUPFAM: SSF81336
+            TIGRFAMs: TIGR01131
+            PROSITE: PS00449
+KEYWORDS    Membrane; Mitochondrion; Transmembrane; Transmembrane helix.
+SOURCE      .
+  ORGANISM  Python molurus molurus
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Lepidosauria; Squamata; Bifurcata; Unidentata; Episquamata;
+            Toxicofera; Serpentes; Henophidia; Pythonidae; Python.
+REFERENCE   1
+  AUTHORS   Dubey B., Meganathan P.R., Haque I.
+  TITLE     Complete mitochondrial genome of Python molurus.
+  JOURNAL   Submitted (JUN-2010) to the EMBL/GenBank/DDBJ databases.
+COMMENT     SUBCELLULAR LOCATION: Mitochondrion inner membrane
+            {ECO:0000256|RuleBase:RU004450}; Multi-pass membrane protein
+            {ECO:0000256|RuleBase:RU004450}.
+FEATURES             Location/Qualifiers
+     TRANSMEM        12..30
+                     /description="Helical. {ECO:0000256|SAM:Phobius}."
+     TRANSMEM        71..92
+                     /description="Helical. {ECO:0000256|SAM:Phobius}."
+     TRANSMEM        98..117
+                     /description="Helical. {ECO:0000256|SAM:Phobius}."
+     TRANSMEM        137..158
+                     /description="Helical. {ECO:0000256|SAM:Phobius}."
+     TRANSMEM        194..222
+                     /description="Helical. {ECO:0000256|SAM:Phobius}."
+ORIGIN
+        1 mnmnmfeqfa speilyvsts llsmmlpilf irpntmllgn rlstimswff ktvllnmmhq
+       61 lsptgqkwsr fltgllmfil lsnllgllpy tftptsqlsm nmalaiplwl atvitglttk
+      121 tsstlahmlp egsptplvpf milietislf mrpialgvrl tanitaghll mtmissavln
+      181 ffntyntlsi lmtillfllt llemavaciq ayvfvllvtl ylqent
+//
