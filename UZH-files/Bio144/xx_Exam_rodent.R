@@ -1,0 +1,10 @@
+rm(list=ls())
+library(tidyverse)
+library(ggfortify)
+library(MASS)
+library(MuMIn)
+library(AICcmodavg)
+library(readr)
+dd <- read_csv("~/Studium/19FS/Bio144/Data/exam/habitat_and_life_exam1.csv")
+
+view(dd)

@@ -1,0 +1,15 @@
+rm(list=ls())
+library(tidyverse)
+library(ggfortify)
+library(MASS)
+library(MuMIn)
+library(AICcmodavg)
+library(readr)
+dd <- read_csv("~/Studium/19FS/Bio144/Data/exam/tree_age_exam1.csv")
+
+model <- lm(Age ~  Height, data=dd)
+summary(model)
+anova(model)
+
+both <- stepAIC(model, direction = c("both"), trace = FALSE,AICc=TRUE)
+summary(both)

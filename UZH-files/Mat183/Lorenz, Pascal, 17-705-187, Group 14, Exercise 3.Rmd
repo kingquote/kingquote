@@ -1,0 +1,26 @@
+---
+title: "Lorenz, Pascal, 17-705-187, Group 14, Exercise 1"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Exercise 3
+---
+
+## Task 1/2
+```{r}
+x <- seq(0, 2*pi, 0.1)
+y <- sin(x)
+plot(x, y, ylab = "sin(x)", lty = "dotted", type = "l", main = "Sinusfunktion", col = "green", lwd = 3) #the arguments in order are: x-values, y-values, label for y-axis, line type, graph type, title, color, line width
+
+```
+
+## Task 3/4
+```{r}
+plot(iris$Petal.Width, iris$Sepal.Width, xlab = "Petal Width", ylab = "Sepal Width", main = "Comparison of leaf width", col = iris$Species, pch=16 ) #chooses colors by assigning a number from 1-3 to the possible entries of iris$species
+legend("topright", legend=c("Setosa", "Versicolor", "Virginica"), col=c(1,2,3), pch=16)#manually assigns the colors 1,2 and 3 to the possible entries of iris$species in the right order
+```
+

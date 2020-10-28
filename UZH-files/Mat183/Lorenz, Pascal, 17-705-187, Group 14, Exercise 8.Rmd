@@ -1,0 +1,46 @@
+---
+title: "Lorenz, Pascal, 17-705-187, Group 14, Exercise 8"
+output: word_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Exercise 8, Task 4
+---
+
+##1
+```{r}
+X <- dbinom(seq(0,20,1),20,1/6) #This dumps the values between 0 and 20 of a Bin(20,1/6) into X
+plot(X, type="l",main="X~Bin(20,1/6)",xlab="x",ylab="f(x)") #Plots these values. Since the step size is 1 and I start at 0, letting it choose the x-axis on it's own works fine.
+X <- dpois(seq(0,10,1),1) #Po(1) from 0 to 10
+plot(X, type="l",main="X~Po(1)",xlab="x",ylab="f(x)")
+```
+
+
+##2
+```{r}
+X <- dexp(seq(0,10,0.1),rate = 1/2) #Exp(1/2) from 0 to 10, step size is 0.1 now, since these distributions are continuous
+plot(seq(0,10,0.1),X, type="l",main="X~Exp(1/2)",xlab="x",ylab="f(x)")
+X <- dnorm(seq(-10,10,0.1),mean = 0, sd = sqrt(5)) #N(0,5) starting at -10, because it's symmetrical around 0-axis
+plot(seq(-10,10,0.1),X, type="l",main="X~N(0,5)",xlab="x",ylab="f(x)")
+```
+
+
+##3
+```{r}
+X <- rnorm(5000, mean = 87, sd = sqrt(sqrt(87))) 
+Y <- rnorm(5000, mean = 87/2, sd = sqrt(87^(1/3))) #Dumps the required samples into X and Y
+V <- X+Y #Adds up values at the same spot in the two sequences
+hist(V) #To check for bell shape
+qqnorm(V) #To compare to theoretical line from qqline()
+qqline(V)
+```
+The histogram is still bell-shaped and the qqnorm-plot of the sum of randomized samples fits the theoretical line for a normal distribution, so V truly still is normally distributed.
+
+##4
+
+```{r}
+#Now this requires some explanation. The task is basically asking for the probability of landing in the upper and lower tail ends of the given normal distribution. I only calculate the upper one, then duplicate the result for symmetrical reasons. At a distance of 2sigma from the mean value towards the positive, 95 percent of values have gone by. Since the tasks asks for >2sigma, I want the upper tail instead of the lower one. Thats where the arquments 95 and lower.tail=false come from. Then I just plug in the mean and sd of the given normal distribution an this comes out:
+2*(pnorm(95, mean = 87, sd = sqrt(87), lower.tail = FALSE))
+```
