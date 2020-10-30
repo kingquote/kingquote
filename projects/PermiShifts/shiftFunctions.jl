@@ -64,7 +64,7 @@ module shiftFuntions
         m = Model(Gurobi.Optimizer)
         set_optimizer_attribute(m, "Presolve", 0)
 
-        # 23 x nworkdays x staff binary assignment 3d matrix
+        # nshifts x nworkdays x staff binary assignment 3d matrix
         # 1 if employee k assigned to shift (i,j), 0 otherwise
         @variable(m, x[1:nshifts, 1:nworkdays, 1:staff], Bin)
 
@@ -83,7 +83,7 @@ module shiftFuntions
 
         # cons1: each person (except special cases k = 1,2) works 10hrs per week
         for k in 2:staff
-            @constraint(m, sum(x[i, j, k] for i in 1:nshifts, j in 1:nworkdays) == 20)
+            @constraint(m, sum(x[i, j, k] for i in 1:nshifts, j in 1:nworkdays) == 20)  
         end
 
         # cons1.1: senior CA = 2 works max 13hrs per week (no min)
