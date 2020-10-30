@@ -1,6 +1,8 @@
-#Code on GitHub: https://github.com/kingquote/UZH-files/tree/master/Bio397/TitanicCompetition
+#Code on GitHub: https://github.com/kingquote/kingquote/tree/main/UZH-files/Bio397/TitanicCompetition
 
-include("TitanicFunctions.jl")
+path = "UZH-files\\Bio397\\TitanicCompetition\\"
+
+include(path*"TitanicFunctions.jl")
 using Main.TitanicFunctions
 using Statistics
 using Plots
@@ -15,7 +17,7 @@ using DecisionTree
 @sk_import ensemble: RandomForestClassifier
 @sk_import model_selection: GridSearchCV
 
-X_train, Y_train, nfeatures,  X_test, pNr_test = prepareData()
+X_train, Y_train, nfeatures,  X_test, pNr_test = prepareData(path*"train.csv", path*"test.csv")
 
 #different models:
 X_train, Y_train, X_test = X_train', Y_train', X_test'
@@ -62,6 +64,6 @@ result = model(X_test)
 
 result = result'
 output = prepareOutput(result, pNr_test)
-CSV.write("test_output.csv", output)
+CSV.write(path*"test_output.csv", output)
 
 

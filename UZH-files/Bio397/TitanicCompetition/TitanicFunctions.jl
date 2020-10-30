@@ -45,9 +45,9 @@ module TitanicFunctions
         return(df, pNr)
     end
       
-    function prepareData()
-        ds = CSV.read("train.csv")
-        ds2 = CSV.read("test.csv")
+    function prepareData(traincsv, testcsv)
+        ds = CSV.read(traincsv)
+        ds2 = CSV.read(testcsv)
       
         df, pNr_train = cleandata(ds)
       
