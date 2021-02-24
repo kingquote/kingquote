@@ -44,7 +44,7 @@ m.dyads$dyadID <- paste(m.dyads$ID1, m.dyads$ID2, sep = "_")
 
 #dyad sex
 #paste0: no space
-m.dyads$dyadsex <- paste0(m.dyads$sex1, m.dyads$sex2)
+#m.dyads$dyadsex <- paste0(m.dyads$sex1, m.dyads$sex2)
 #this is better as mf becomes fm
 m.dyads$dyadsex <- paste0(pmin(m.dyads$sex1, m.dyads$sex2),
                           pmax(m.dyads$sex1, m.dyads$sex2))
@@ -52,27 +52,26 @@ m.dyads$dyadsex <- paste0(pmin(m.dyads$sex1, m.dyads$sex2),
 m.dyads$samesex <- ifelse(m.dyads$dyadsex == "mm" | m.dyads$dyadsex == "ff", 1, 0)
 
 #plant knowledge
-#creating an incidence matrix
-m.plants <- data.frame(ID=c("john", "mary", "paul", "sarah"),
-                       plant1 = c(0,0,1,1), plant2 = c(1,1,1,0),
-                       plant3 = c(1,0,1,1), plant4 = c(0,0,0,1))
-
+m.plants <- read_excel("plant_knowledge.xlsx")
+nplants <- ncol(m.plants) - 1
+nindiv <- nrow(m.plants)
+ndyads <- nrow(m.dyads)
 #replicate lines to match number of shared traits per dyad (=plant number)
-m.dyads <- m.dyads[rep(1:nrow(m.dyads),each=4),]
+m.dyads <- m.dyads[rep(1:ndyads,each=nplants),]
 
 #create plant knowledge column in m.dyads file
 #repeat=  number of plants; times = nymber of dyads 
-m.dyads$plant <- rep(1:4, times = 6)
+m.dyads$plant <- rep(1:nplants, times = ndyads)
 
 #create a file with plant knowledge and shared plant knowledge
 #make a file with ID and plant
-m.plants2 <- m.plants[rep(1:nrow(m.plants), each=4),]
+m.plants2 <- m.plants[rep(1:nrow(m.plants), each=nplants),]
 #but only want the ID column
 m.plants2 <- subset(m.plants2, select=ID)
 #change it to ID1
 colnames(m.plants2)[1] <- "ID1" 
 #add plant column
-m.plants2$plant <- rep(1:4, times = 4)
+m.plants2$plant <- rep(1:nplants, times = nindiv)
 
 #create a plant knowledge column
 #transpose whole m.plant file into single column of plant knowledge
@@ -86,7 +85,7 @@ m.dyads <- merge(m.dyads, m.plants2, by = c("ID1", "plant"))
 #reorder by ID 
 m.dyads <- m.dyads[order(m.dyads$ID1, m.dyads$ID2),]
 #Id1 knowledge: change name from know to know1
-colnames(m.dyads)[9] <- "know1"
+colnames(m.dyads)[19] <- "know1"
 
 #then ID2 knowledge
 #change column names to allow proper matching
@@ -94,7 +93,7 @@ colnames(m.plants2)[1] <- "ID2"
 colnames(m.plants2)[3] <- "know2"
 m.dyads <- merge(m.dyads, m.plants2, by = c("ID2", "plant"))
 #reorder columns and rows
-m.dyads <- m.dyads[c(3,1,6,4,5,7,8,2,9,10)]
+m.dyads <- m.dyads[c(3,1,16,4,5,6,7,8,9,10,11,12,13,14,15,17,18,2,19,20)]
 m.dyads <- m.dyads[order(m.dyads$ID1,m.dyads$ID2),]
 
 #create shared knowledge variable
