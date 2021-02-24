@@ -26,7 +26,7 @@ colnames(m.dyads) <- c("ID1", "ID2")
 m.dyads <- merge(m.dyads, m.participants, by.x="ID1", by.y ="ID")
 
 #change column sex to sex1
-colnames(m.dyads)[3] <- "sex1"
+colnames(m.dyads)[4] <- "sex1"
 
 #add ID2 sex
 m.dyads <- merge(m.dyads, m.participants, by.x="ID2", by.y="ID")

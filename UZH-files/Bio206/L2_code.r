@@ -101,7 +101,10 @@ m.dyads$shared <- ifelse(m.dyads$know1 == 1 & m.dyads$know2 == 1, 1, 0)
 
 
 #proportion test: chisq on dyadsex & samesex
+fisher.test(m.dyads$dyadsex, m.dyads$shared)
 chisq.test(m.dyads$dyadsex, m.dyads$shared)
+
+fisher.test(m.dyads$samesex, m.dyads$shared)
 chisq.test(m.dyads$samesex, m.dyads$shared)
 
 #logistic regression on dyadsex & samesex 
