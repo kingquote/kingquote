@@ -26,16 +26,16 @@ colnames(m.dyads) <- c("ID1", "ID2")
 m.dyads <- merge(m.dyads, m.participants, by.x="ID1", by.y ="ID")
 
 #change column sex to sex1
-colnames(m.dyads)[4] <- "sex1"
+colnames(m.dyads)[c(3,4,5,6,7,8)] <- c("camp1", "sex1", "age1", "born1", "born_cluster1", "learned1")
 
 #add ID2 sex
 m.dyads <- merge(m.dyads, m.participants, by.x="ID2", by.y="ID")
 
 #reordering columns and rows
-m.dyads <- m.dyads[,c(2,1,3,4)]
+m.dyads <- m.dyads[,c(2,1,3,4,5,6,7,8,9,10,11,12,13,14)]
 m.dyads <- m.dyads[order(m.dyads$ID1),]
 #change sex to sex2
-colnames(m.dyads)[4] <- "sex2" 
+colnames(m.dyads)[c(9,10,11,12,13,14)] <- c("camp2", "sex2", "age2", "born2", "born_cluster2", "learned2")
 
 #creating dyad variables
 
