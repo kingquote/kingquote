@@ -96,4 +96,17 @@ m.dyads <- m.dyads[c(3,1,6,4,5,7,8,2,9,10)]
 m.dyads <- m.dyads[order(m.dyads$ID1,m.dyads$ID2),]
 
 #create shared knowledge variable
-m.dyads$dyadsharedknow <- ifelse(m.dyads$know1 == 1 & m.dyads$know2 == 1, 1, 0)
+m.dyads$shared <- ifelse(m.dyads$know1 == 1 & m.dyads$know2 == 1, 1, 0)
+
+
+
+#proportion test: chisq on dyadsex & samesex
+chisq.test(m.dyads$dyadsex, m.dyads$shared)
+chisq.test(m.dyads$samesex, m.dyads$shared)
+
+#logistic regression on dyadsex & samesex 
+glm.fit1 <- glm(shared ~ dyadsex, data = m.dyads, family = binomial)
+summary(glm.fit1)
+
+glm.fit1 <- glm(shared ~ samesex, data = m.dyads, family = binomial)
+summary(glm.fit1)
