@@ -4,7 +4,7 @@ wilcox.test(pitch$frequency ~ pitch$attitude)
 
 
 #random intercepts
-polite <- lmer(frequency ~ attitude + (1|subject) + (1|scenario), data=pitch)
+polite <- lmer(frequency ~ attitude + (1 | subject) + (1 | scenario), data = pitch)
 summary(polite)
 coef(polite)
 polite2 <- lmer(frequency ~ attitude + gender

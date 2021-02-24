@@ -1,100 +1,103 @@
 #proportion test: chisq on dyadsex & samesex
-#logistic regression on dyadsex & samesex 
+#logistic regression on dyadsex & samesex
 
 
 library("readxl")
-#creating data frame with dyads
+#creating data frame with_dyads
 #t to transpose
 #if there are multiple entries of the same individual, use unique(t(combn))
 
 #create dataset
 #individuals
-m.participants <- read_excel("plant_participants.xlsx")
-nrow(m.participants) == length(unique(m.participants$ID))
-#True means no repetitions in ID
+m_participants <- read_excel("plant_participants.xlsx")
+nrow(m_participants) == length(unique(m_participants$id))
+#True means no repetitions in id
 
 
-#create dyads
-m.dyads <- data.frame(t(combn(m.participants$ID, 2)))
-colnames(m.dyads) <- c("ID1", "ID2")
+#create_dyads
+m_dyads <- data.frame(t(combn(m_participants$id, 2)))
+colnames(m_dyads) <- c("id1", "id2")
 
-#two ID columns; let's add sex of ID1
-#we need to merge files m.dyads and m.participants by ID;
-#we are matching m.dyads$ID1 and m.participants$ID
+#two id columns; let's add sex of id1
+#we need to merge files m_dyads and m_participants by id;
+#we are matching m_dyads$id1 and m_participants$id
 
 #merge
-m.dyads <- merge(m.dyads, m.participants, by.x="ID1", by.y ="ID")
+m_dyads <- merge(m_dyads, m_participants, by.x = "id1", by.y = "id")
 
 #change column sex to sex1
-colnames(m.dyads)[c(3,4,5,6,7,8)] <- c("camp1", "sex1", "age1", "born1", "born_cluster1", "learned1")
+colnames(m_dyads)[c(3, 4, 5, 6, 7, 8)] <-
+    c("camp1", "sex1", "age1", "born1", "born_cluster1", "learned1")
 
-#add ID2 sex
-m.dyads <- merge(m.dyads, m.participants, by.x="ID2", by.y="ID")
+#add id2 sex
+m_dyads <- merge(m_dyads, m_participants, by.x = "id2", by.y = "id")
 
 #reordering columns and rows
-m.dyads <- m.dyads[,c(2,1,3,4,5,6,7,8,9,10,11,12,13,14)]
-m.dyads <- m.dyads[order(m.dyads$ID1),]
+m_dyads <- m_dyads[, c(2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)]
+m_dyads <- m_dyads[order(m_dyads$id1), ]
 #change sex to sex2
-colnames(m.dyads)[c(9,10,11,12,13,14)] <- c("camp2", "sex2", "age2", "born2", "born_cluster2", "learned2")
+colnames(m_dyads)[c(9, 10, 11, 12, 13, 14)] <-
+    c("camp2", "sex2", "age2", "born2", "born_cluster2", "learned2")
 
 #creating dyad variables
 
-#dyad ID: paste IDs together
-m.dyads$dyadID <- paste(m.dyads$ID1, m.dyads$ID2, sep = "_")
+#dyad id: paste ids together
+m_dyads$dyadid <- paste(m_dyads$id1, m_dyads$id2, sep = "_")
 
 #dyad sex
 #paste0: no space
-#m.dyads$dyadsex <- paste0(m.dyads$sex1, m.dyads$sex2)
 #this is better as mf becomes fm
-m.dyads$dyadsex <- paste0(pmin(m.dyads$sex1, m.dyads$sex2),
-                          pmax(m.dyads$sex1, m.dyads$sex2))
+m_dyads$dyadsex <- paste0(pmin(m_dyads$sex1, m_dyads$sex2),
+                          pmax(m_dyads$sex1, m_dyads$sex2))
 #variable same vs different sex
-m.dyads$samesex <- ifelse(m.dyads$dyadsex == "mm" | m.dyads$dyadsex == "ff", 1, 0)
+m_dyads$samesex <- ifelse(m_dyads$dyadsex == "mm" |
+                        m_dyads$dyadsex == "ff", 1, 0)
 
 #plant knowledge
-m.plants <- read_excel("plant_knowledge.xlsx")
-nplants <- ncol(m.plants) - 1
-nindiv <- nrow(m.plants)
-ndyads <- nrow(m.dyads)
+m_plants <- read_excel("plant_knowledge.xlsx")
+nplants <- ncol(m_plants) - 1
+nindiv <- nrow(m_plants)
+ndyads <- nrow(m_dyads)
 #replicate lines to match number of shared traits per dyad (=plant number)
-m.dyads <- m.dyads[rep(1:ndyads,each=nplants),]
+m_dyads <- m_dyads[rep(1:ndyads, each = nplants), ]
 
-#create plant knowledge column in m.dyads file
-#repeat=  number of plants; times = nymber of dyads 
-m.dyads$plant <- rep(1:nplants, times = ndyads)
+#create plant knowledge column in m_dyads file
+#repeat=  number of_plants; times = nymber of_dyads
+m_dyads$plant <- rep(1:nplants, times = ndyads)
 
 #create a file with plant knowledge and shared plant knowledge
-#make a file with ID and plant
-m.plants2 <- m.plants[rep(1:nrow(m.plants), each=nplants),]
-#but only want the ID column
-m.plants2 <- subset(m.plants2, select=ID)
-#change it to ID1
-colnames(m.plants2)[1] <- "ID1" 
+#make a file with id and plant
+m_plants2 <- m_plants[rep(1:nindiv, each = nplants), ]
+#but only want the id column
+m_plants2 <- subset(m_plants2, select = id)
+#change it to id1
+colnames(m_plants2)[1] <- "id1"
 #add plant column
-m.plants2$plant <- rep(1:nplants, times = nindiv)
+m_plants2$plant <- rep(1:nplants, times = nindiv)
 
 #create a plant knowledge column
 #transpose whole m.plant file into single column of plant knowledge
 #but first exclude the columns that are not about plant knowledge
-m.plants3 <- subset(m.plants, select = -c(ID))
-m.plants2$know <- c(t(m.plants3))
+m_plants3 <- subset(m_plants, select = -c(id))
+m_plants2$know <- c(t(m_plants3))
 
-#merge dyads and plant file
-#first include ID1 knowledge
-m.dyads <- merge(m.dyads, m.plants2, by = c("ID1", "plant"))
-#reorder by ID 
-m.dyads <- m.dyads[order(m.dyads$ID1, m.dyads$ID2),]
-#Id1 knowledge: change name from know to know1
-colnames(m.dyads)[19] <- "know1"
+#merge_dyads and plant file
+#first include id1 knowledge
+m_dyads <- merge(m_dyads, m_plants2, by = c("id1", "plant"))
+#reorder by id
+m_dyads <- m_dyads[order(m_dyads$id1, m_dyads$id2), ]
+#id1 knowledge: change name from know to know1
+colnames(m_dyads)[19] <- "know1"
 
-#then ID2 knowledge
+#then id2 knowledge
 #change column names to allow proper matching
-colnames(m.plants2)[1] <- "ID2"
-colnames(m.plants2)[3] <- "know2"
-m.dyads <- merge(m.dyads, m.plants2, by = c("ID2", "plant"))
+colnames(m_plants2)[1] <- "id2"
+colnames(m_plants2)[3] <- "know2"
+m_dyads <- merge(m_dyads, m_plants2, by = c("id2", "plant"))
 #reorder columns and rows
-m.dyads <- m.dyads[c(3,1,16,4,5,6,7,8,9,10,11,12,13,14,15,17,18,2,19,20)]
-m.dyads <- m.dyads[order(m.dyads$ID1,m.dyads$ID2),]
+m_dyads <- m_dyads[c(3, 1, 16, 4, 5, 6, 7, 8, 9,
+    10, 11, 12, 13, 14, 15, 17, 18, 2, 19, 20)]
+m_dyads <- m_dyads[order(m_dyads$id1, m_dyads$id2), ]
 
 #create shared knowledge variable
-m.dyads$shared <- ifelse(m.dyads$know1 == 1 & m.dyads$know2 == 1, 1, 0)
+m_dyads$shared <- ifelse(m_dyads$know1 == 1 & m_dyads$know2 == 1, 1, 0)
