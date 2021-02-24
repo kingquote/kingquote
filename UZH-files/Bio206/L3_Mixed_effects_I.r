@@ -1,3 +1,5 @@
+load("L3_workspace_BIO206.rdata")
+
 #example: pitch
 t.test(pitch$frequency ~ pitch$attitude)
 wilcox.test(pitch$frequency ~ pitch$attitude)

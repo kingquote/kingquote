@@ -1,7 +1,3 @@
-#proportion test: chisq on dyadsex & samesex
-#logistic regression on dyadsex & samesex
-
-
 library("readxl")
 #creating data frame with_dyads
 #t to transpose
