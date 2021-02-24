@@ -101,3 +101,4 @@ m_dyads <- m_dyads[order(m_dyads$id1, m_dyads$id2), ]
 
 #create shared knowledge variable
 m_dyads$shared <- ifelse(m_dyads$know1 == 1 & m_dyads$know2 == 1, 1, 0)
+write.csv(m_dyads, "c:\\Users\\Pascal\\Documents\\GitHub\\kingquote\\UZH-files\\Bio206\\plant_shared_knowledge.csv", row.names = FALSE, quote = FALSE)
