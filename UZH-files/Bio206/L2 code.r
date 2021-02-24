@@ -98,3 +98,4 @@ m.dyads <- m.dyads[order(m.dyads$ID1,m.dyads$ID2),]
 #create shared knowledge variable
 m.dyads$shared <- ifelse(m.dyads$know1 == 1 & m.dyads$know2 == 1, 1, 0)
 
+
