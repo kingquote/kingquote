@@ -1,3 +1,4 @@
+#remove plants with NA, remove born_cluster
 library("readxl")
 #creating data frame with_dyads
 #t to transpose
