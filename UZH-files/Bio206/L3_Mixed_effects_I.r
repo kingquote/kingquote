@@ -1,4 +1,4 @@
-load("L3_workspace_BIO206.rdata")
+load("L3_workspace.rdata")
 library("lme4")
 
 #example: pitch
