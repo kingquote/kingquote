@@ -1,18 +1,19 @@
-#remove plants with NA, remove born_cluster
+##Init
 library("readxl")
-#creating data frame with_dyads
-#t to transpose
-#if there are multiple entries of the same individual, use unique(t(combn))
+try(setwd(dirname(rstudioapi::getActiveDocumentContext()$path)), silent = TRUE)
+#not necessary in VSCode, just let it error out there
 
-##Data Ingest and Pre-Prep
-#individuals
+##Data Ingest
 m_participants <- read_excel("plant_participants.xlsx")
+m_plants <- read_excel("plant_knowledge.xlsx")
+
+##Pre-Prep
+#individuals
 m_participants <- subset(m_participants, select = -c(6))
 nrow(m_participants) == length(unique(m_participants$id))
 #True means no repetitions in id
 
 #plants
-m_plants <- read_excel("plant_knowledge.xlsx")
 m_plants <- subset(m_plants, select = -c(5, 17, 25, 27))
 
 ##Data Prep
