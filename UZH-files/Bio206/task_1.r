@@ -96,8 +96,10 @@ colnames(m_plants2)[1] <- "id2"
 colnames(m_plants2)[3] <- "know2"
 m_dyads <- merge(m_dyads, m_plants2, by = c("id2", "plant"))
 #reorder columns and rows
-m_dyads <- m_dyads[c(3, 1, 16, 4, 5, 6, 7, 8, 9,
-    10, 11, 12, 13, 14, 15, 2, 17, 18)]
+index <- grep("^dyadid$", colnames(m_dyads))
+cols <- ncol(m_dyads)
+m_dyads <- m_dyads[c(3, 1, index, 4:(index - 1),
+    (index + 1):(cols - 2), 2, cols - 1, cols)]
 m_dyads <- m_dyads[order(m_dyads$id1, m_dyads$id2), ]
 
 #create shared knowledge variable
