@@ -4,13 +4,18 @@ library("readxl")
 #t to transpose
 #if there are multiple entries of the same individual, use unique(t(combn))
 
-#create dataset
+##Data Ingest and Pre-Prep
 #individuals
 m_participants <- read_excel("plant_participants.xlsx")
+m_participants <- subset(m_participants, select = -c(6))
 nrow(m_participants) == length(unique(m_participants$id))
 #True means no repetitions in id
 
+#plants
+m_plants <- read_excel("plant_knowledge.xlsx")
+m_plants <- subset(m_plants, select = -c(5, 17, 25, 27))
 
+##Data Prep
 #create_dyads
 m_dyads <- data.frame(t(combn(m_participants$id, 2)))
 colnames(m_dyads) <- c("id1", "id2")
@@ -23,18 +28,18 @@ colnames(m_dyads) <- c("id1", "id2")
 m_dyads <- merge(m_dyads, m_participants, by.x = "id1", by.y = "id")
 
 #change column sex to sex1
-colnames(m_dyads)[c(3, 4, 5, 6, 7, 8)] <-
-    c("camp1", "sex1", "age1", "born1", "born_cluster1", "learned1")
+colnames(m_dyads)[c(3, 4, 5, 6, 7)] <-
+    c("camp1", "sex1", "age1", "born1", "learned1")
 
 #add id2 sex
 m_dyads <- merge(m_dyads, m_participants, by.x = "id2", by.y = "id")
 
 #reordering columns and rows
-m_dyads <- m_dyads[, c(2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)]
+m_dyads <- m_dyads[, c(2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)]
 m_dyads <- m_dyads[order(m_dyads$id1), ]
 #change sex to sex2
-colnames(m_dyads)[c(9, 10, 11, 12, 13, 14)] <-
-    c("camp2", "sex2", "age2", "born2", "born_cluster2", "learned2")
+colnames(m_dyads)[c(8, 9, 10, 11, 12)] <-
+    c("camp2", "sex2", "age2", "born2", "learned2")
 
 #creating dyad variables
 
@@ -51,7 +56,6 @@ m_dyads$samesex <- ifelse(m_dyads$dyadsex == "mm" |
                         m_dyads$dyadsex == "ff", 1, 0)
 
 #plant knowledge
-m_plants <- read_excel("plant_knowledge.xlsx")
 nplants <- ncol(m_plants) - 1
 nindiv <- nrow(m_plants)
 ndyads <- nrow(m_dyads)
@@ -84,7 +88,7 @@ m_dyads <- merge(m_dyads, m_plants2, by = c("id1", "plant"))
 #reorder by id
 m_dyads <- m_dyads[order(m_dyads$id1, m_dyads$id2), ]
 #id1 knowledge: change name from know to know1
-colnames(m_dyads)[19] <- "know1"
+colnames(m_dyads)[17] <- "know1"
 
 #then id2 knowledge
 #change column names to allow proper matching
@@ -93,7 +97,7 @@ colnames(m_plants2)[3] <- "know2"
 m_dyads <- merge(m_dyads, m_plants2, by = c("id2", "plant"))
 #reorder columns and rows
 m_dyads <- m_dyads[c(3, 1, 16, 4, 5, 6, 7, 8, 9,
-    10, 11, 12, 13, 14, 15, 17, 18, 2, 19, 20)]
+    10, 11, 12, 13, 14, 15, 2, 17, 18)]
 m_dyads <- m_dyads[order(m_dyads$id1, m_dyads$id2), ]
 
 #create shared knowledge variable
