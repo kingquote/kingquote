@@ -1,0 +1,113 @@
+---
+title: "Report 1: Shared plant knowledge"
+output: html_notebook
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+1)  **Plant knowledge file**
+
+```{=html}
+<!-- -->
+```
+a)  After removing plants with NAs, how many plants are left in the
+    dataset?
+b)  Calculate the total sum of knowledge by plant (how many people know
+    each plant). Are some plants more popular than others? What is the
+    average by plant? Plot a histogram with the distribution.
+c)  Calculate total knowledge by individual. Is plant knowledge variable
+    among individuals? What is the average plant knowledge by
+    individual? Plot a histogram.
+
+```{=html}
+<!-- -->
+```
+2)  **Plant participants file**
+
+```{=html}
+<!-- -->
+```
+a)  What is the age distribution in the sample? Produce a table.
+b)  Which fraction is pre-adult (5-10 or 10-15 years old)?
+c)  What is the sex ratio in the sample?
+
+```{=html}
+<!-- -->
+```
+3)  **Dyads**
+
+```{=html}
+<!-- -->
+```
+a)  How many dyads are FF, MM, and FM?
+b)  How many dyads are 'young' (both individuals are 15 or under) and
+    old (both over 60)?
+c)  How many dyads born in same vs. different camp? (use born instead of
+    born_cluster)
+d)  How many subjects were in the same vs. different camps during the
+    interviews?
+
+```{=html}
+<!-- -->
+```
+4)  Total score Assuming (incorrectly) that the data points are
+    independent, we can define 'total score' (between 0 and 31) as the
+    sum of shared knowledge by each dyad. Is there a difference in total
+    score as a function of dyadic:
+
+```{=html}
+<!-- -->
+```
+a)  Age? (define it as young, old, or others)
+b)  Sex? (MM, MF, FF)
+c)  Camp? (define it as same vs different camp)
+d)  Birthplace? (same or different) Under that wrong assumption, which
+    tests would you select? Why? Run this test for dyadic sex.
+
+```{=html}
+<!-- -->
+```
+5)  Regression analysis Run a logistic analysis (i.e. not controlling
+    for pseudoreplication) to predict shared knowledge as a function of
+    dyadic:
+
+```{=html}
+<!-- -->
+```
+a)  Age
+b)  Sex
+c)  Camp
+d)  Birthplace
+e)  A multiplicative model with age, sex and their interaction
+    (age\*sex) is the interaction significant? Paste the optimised model
+    output
+
+  Paste the outputs and interpret each result
+
+6)  Mixed-effects modelling
+
+```{=html}
+<!-- -->
+```
+a)  Which random factor should be included in every analysis? Pick just
+    that one and use it in all analyses. Controlling for random
+    intercept effects only, run a mixed effects logistic regression
+    model of shared knowledge on:
+b)  Age
+c)  Sex
+d)  Birthplace
+e)  Camp
+f)  A multiplicative model including age, sex and interaction (age\*sex)
+
+```{=html}
+<!-- -->
+```
+7)  Conclusion Compare the results from total scores, logistic
+    regression and mixed effects logistic regression, and discuss the
+    effect of age, sex, camp and birthplace on shared plant knowledge.
+    Which factor(s) is/are the most important?
+
+```{r}
+
+```
