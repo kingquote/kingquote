@@ -1,4 +1,5 @@
 load("L5_workspace.rdata")
+library("lme4")
 
 #group comparisons
 kruskal.test(rats$Glycogen ~ rats$Treatment)
@@ -17,7 +18,8 @@ liver <- rats$Treatment:rats$Rat:rats$Liver
 #model
 modelrats <- lmer(Glycogen ~ Treatment + (1 | rat) + (1 | liver), data = rats)
 summary(modelrats)
-
+modelrats_null <- lmer(Glycogen ~ (1 | rat) + (1 | liver), data = rats)
+anova(modelrats_null, modelrats)
 
 #relevelling
 rats$Treatment <- relevel(rats$Treatment, ref = "2")
