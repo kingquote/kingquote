@@ -53,7 +53,7 @@ m_dyads$dyadid <- paste(m_dyads$id1, m_dyads$id2, sep = "_")
 m_dyads$dyadsex <- paste0(pmin(m_dyads$sex1, m_dyads$sex2),
                           pmax(m_dyads$sex1, m_dyads$sex2))
 #variable same vs different sex
-m_dyads$samesex <- ifelse(m_dyads$dyadsex == "mm" |
+m_dyads$dyadsamesex <- ifelse(m_dyads$dyadsex == "mm" |
                         m_dyads$dyadsex == "ff", 1, 0)
 
 #plant knowledge

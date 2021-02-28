@@ -5,6 +5,18 @@ editor_options:
   markdown: 
     wrap: 72
 ---
+```{r}
+##Init
+library("readxl")
+library("lessR")
+try(setwd(dirname(rstudioapi::getActiveDocumentContext()$path)), silent = TRUE)
+#not necessary in VSCode, just let it error out there
+
+##Data Ingest
+m_participants <- read_excel("plant_participants.xlsx")
+m_plants <- read_excel("plant_knowledge.xlsx")
+```
+
 
 1)  **Plant knowledge file**
 
@@ -13,12 +25,32 @@ editor_options:
 ```
 a)  After removing plants with NAs, how many plants are left in the
     dataset?
+```{r}
+m_plants <- subset(m_plants, select = -c(6, 18, 26, 28))
+nplants <- ncol(m_plants) - 1 #-1 is the ID column
+nplants
+```
+    
 b)  Calculate the total sum of knowledge by plant (how many people know
     each plant). Are some plants more popular than others? What is the
     average by plant? Plot a histogram with the distribution.
+```{r}
+plantcolsums <- colSums((subset(m_plants, select = -c(1))))
+mean(plantcolsums)
+Histogram(plantcolsums, bin_width = 12)
+```
+  There is variation in plant knowledge by plant, though most plants seem to be known by many people, with only four plants known by less than 140 people (out of 219 people and 31 plants). A plant is known by 177.4 people on average.
+    
 c)  Calculate total knowledge by individual. Is plant knowledge variable
     among individuals? What is the average plant knowledge by
     individual? Plot a histogram.
+```{r}
+plantrowsums <- rowSums((subset(m_plants, select = -c(1))))
+mean(plantrowsums)
+Histogram(plantrowsums, bin_width = 2, bin_end = 31)
+```
+  Again there is variation, though there is a sharp peak in the histogram shortly before 30 plants known per person, with most people falling in the range from 27 to 30. Not surprisingly, the average of 25.1 plants known per person is very close to that range, being pulled to the bottom of it only by the fact that there are more exceptionally "ignorant" (might just be young or other reasons) than exceptionally knowledgeable individuals.
+    
 
 ```{=html}
 <!-- -->
@@ -29,8 +61,21 @@ c)  Calculate total knowledge by individual. Is plant knowledge variable
 <!-- -->
 ```
 a)  What is the age distribution in the sample? Produce a table.
+```{r}
+m_participants <- subset(m_participants, select = -c(6))
+nrow(m_participants) == length(unique(m_participants$id))
+#True means no repetitions in id
+BarChart(age, data = m_participants)
+```
+
 b)  Which fraction is pre-adult (5-10 or 10-15 years old)?
+As seen in the plot above, 19%.
+
 c)  What is the sex ratio in the sample?
+```{r}
+BarChart(sex, data = m_participants)
+```
+
 
 ```{=html}
 <!-- -->
@@ -40,13 +85,66 @@ c)  What is the sex ratio in the sample?
 ```{=html}
 <!-- -->
 ```
+```{r}
+m_dyads <- data.frame(t(combn(m_participants$id, 2)))
+colnames(m_dyads) <- c("id1", "id2")
+m_dyads <- merge(m_dyads, m_participants, by.x = "id1", by.y = "id")
+colnames(m_dyads)[c(3, 4, 5, 6, 7)] <-
+    c("camp1", "sex1", "age1", "born1", "learned1")
+m_dyads <- merge(m_dyads, m_participants, by.x = "id2", by.y = "id")
+m_dyads <- m_dyads[, c(2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)]
+m_dyads <- m_dyads[order(m_dyads$id1), ]
+colnames(m_dyads)[c(8, 9, 10, 11, 12)] <-
+    c("camp2", "sex2", "age2", "born2", "learned2")
+m_dyads$dyadid <- paste(m_dyads$id1, m_dyads$id2, sep = "_")
+```
+
 a)  How many dyads are FF, MM, and FM?
+```{r}
+m_dyads$dyadsex <- paste0(pmin(m_dyads$sex1, m_dyads$sex2),
+                          pmax(m_dyads$sex1, m_dyads$sex2))
+table(m_dyads$dyadsex) #since we were asked not to remove individuals with NAs, I'll just ignore everything that contains an NA
+m_dyads$dyadsamesex <- ifelse(m_dyads$dyadsex == "mm" |
+                        m_dyads$dyadsex == "ff", 1, 0)
+```
+
 b)  How many dyads are 'young' (both individuals are 15 or under) and
     old (both over 60)?
+```{r}
+m_dyads$dyadage <- paste(pmin(m_dyads$age1, m_dyads$age2),
+                         pmax(m_dyads$age1, m_dyads$age2),
+                         sep = "_")
+m_dyads$dyadagegroup <- ifelse(m_dyads$dyadage == "10-15_10-15", "young", "other")
+for(i in 1 : nrow(m_dyads)){
+  if(m_dyads$dyadage[i] == "60-80_60-80"){
+    m_dyads$dyadagegroup[i] <- "old"
+  }
+}
+table(m_dyads$dyadagegroup)
+```
+    
 c)  How many dyads born in same vs. different camp? (use born instead of
     born_cluster)
+```{r}
+m_dyads$dyadborn <- paste(pmin(m_dyads$born1, m_dyads$born2),
+                          pmax(m_dyads$born1, m_dyads$born2),
+                          sep = "_")
+m_dyads$dyadsameborn <- ifelse(m_dyads$born1 == m_dyads$born2, 1, 0)
+table(m_dyads$dyadsameborn)
+```
+3938 were born in the same camp vs 19933 who were born in different camps.
+    
 d)  How many subjects were in the same vs. different camps during the
     interviews?
+```{r}
+m_dyads$dyadcamp <- paste(pmin(m_dyads$camp1, m_dyads$camp2),
+                          pmax(m_dyads$camp1, m_dyads$camp2),
+                          sep = "_")
+m_dyads$dyadsamecamp <- ifelse(m_dyads$camp1 == m_dyads$camp2, 1, 0)
+table(m_dyads$dyadsamecamp)
+```
+6215 were interviewed in the same camp vs 17656 who were interviewed in different camps.
+    
 
 ```{=html}
 <!-- -->
