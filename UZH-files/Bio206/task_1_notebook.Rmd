@@ -9,12 +9,24 @@ editor_options:
 ##Init
 library("readxl")
 library("lessR")
+library("lme4")
 try(setwd(dirname(rstudioapi::getActiveDocumentContext()$path)), silent = TRUE)
 #not necessary in VSCode, just let it error out there
 
 ##Data Ingest
 m_participants <- read_excel("plant_participants.xlsx")
 m_plants <- read_excel("plant_knowledge.xlsx")
+
+##Data Prep
+m_participants <- subset(m_participants, select = -c(6))
+nrow(m_participants) == length(unique(m_participants$id))
+#True means no repetitions in id
+for(i in 1 : ncol(m_participants)){
+  m_participants <- m_participants[m_participants[, i] != "NA",]
+}
+m_plants <- m_plants[m_plants$id %in% m_participants$id,]
+#I know you daid not to remove individuals with NAs, but they were causing problems later, so this step made sense to me.
+m_participants$age <- ifelse(m_participants$age == "5-10", "05-10", m_participants$age)
 ```
 
 
@@ -37,9 +49,9 @@ b)  Calculate the total sum of knowledge by plant (how many people know
 ```{r}
 plantcolsums <- colSums((subset(m_plants, select = -c(1))))
 mean(plantcolsums)
-Histogram(plantcolsums, bin_width = 12)
+Histogram(plantcolsums, bin_width = 10)
 ```
-  There is variation in plant knowledge by plant, though most plants seem to be known by many people, with only four plants known by less than 140 people (out of 219 people and 31 plants). A plant is known by 177.4 people on average.
+There is variation in plant knowledge by plant, though most plants seem to be known by many people, with only four plants known by less than 120 people (out of 179 people and 31 plants). A plant is known by 147.9 people on average.
     
 c)  Calculate total knowledge by individual. Is plant knowledge variable
     among individuals? What is the average plant knowledge by
@@ -49,7 +61,7 @@ plantrowsums <- rowSums((subset(m_plants, select = -c(1))))
 mean(plantrowsums)
 Histogram(plantrowsums, bin_width = 2, bin_end = 31)
 ```
-  Again there is variation, though there is a sharp peak in the histogram shortly before 30 plants known per person, with most people falling in the range from 27 to 30. Not surprisingly, the average of 25.1 plants known per person is very close to that range, being pulled to the bottom of it only by the fact that there are more exceptionally "ignorant" (might just be young or other reasons) than exceptionally knowledgeable individuals.
+  Again there is variation, though there is a sharp peak in the histogram shortly before 30 plants known per person, with most people falling in the range from 27 to 30. Not surprisingly, the average of 25.6 plants known per person is very close to that range, being pulled to the bottom of it only by the fact that there are more exceptionally "ignorant" (might just be young or other reasons) than exceptionally knowledgeable individuals.
     
 
 ```{=html}
@@ -62,14 +74,15 @@ Histogram(plantrowsums, bin_width = 2, bin_end = 31)
 ```
 a)  What is the age distribution in the sample? Produce a table.
 ```{r}
-m_participants <- subset(m_participants, select = -c(6))
-nrow(m_participants) == length(unique(m_participants$id))
-#True means no repetitions in id
 BarChart(age, data = m_participants)
 ```
 
 b)  Which fraction is pre-adult (5-10 or 10-15 years old)?
-As seen in the plot above, 19%.
+```{r}
+nrow(m_participants[m_participants$age == "05-10" | m_participants$age == "10-15",]) /
+  nrow(m_participants)
+```
+
 
 c)  What is the sex ratio in the sample?
 ```{r}
@@ -103,7 +116,7 @@ a)  How many dyads are FF, MM, and FM?
 ```{r}
 m_dyads$dyadsex <- paste0(pmin(m_dyads$sex1, m_dyads$sex2),
                           pmax(m_dyads$sex1, m_dyads$sex2))
-table(m_dyads$dyadsex) #since we were asked not to remove individuals with NAs, I'll just ignore everything that contains an NA
+table(m_dyads$dyadsex)
 m_dyads$dyadsamesex <- ifelse(m_dyads$dyadsex == "mm" |
                         m_dyads$dyadsex == "ff", 1, 0)
 ```
@@ -114,12 +127,10 @@ b)  How many dyads are 'young' (both individuals are 15 or under) and
 m_dyads$dyadage <- paste(pmin(m_dyads$age1, m_dyads$age2),
                          pmax(m_dyads$age1, m_dyads$age2),
                          sep = "_")
-m_dyads$dyadagegroup <- ifelse(m_dyads$dyadage == "10-15_10-15", "young", "other")
-for(i in 1 : nrow(m_dyads)){
-  if(m_dyads$dyadage[i] == "60-80_60-80"){
-    m_dyads$dyadagegroup[i] <- "old"
-  }
-}
+m_dyads$dyadagegroup <- ifelse(m_dyads$dyadage == "05-10_05-10" |
+                              m_dyads$dyadage == "05-10_10-15" |
+                              m_dyads$dyadage == "10-15_10-15", "young", "other")
+m_dyads$dyadagegroup <- ifelse(m_dyads$dyadage == "60-80_60-80", "old", m_dyads$dyadagegroup)
 table(m_dyads$dyadagegroup)
 ```
     
@@ -132,7 +143,7 @@ m_dyads$dyadborn <- paste(pmin(m_dyads$born1, m_dyads$born2),
 m_dyads$dyadsameborn <- ifelse(m_dyads$born1 == m_dyads$born2, 1, 0)
 table(m_dyads$dyadsameborn)
 ```
-3938 were born in the same camp vs 19933 who were born in different camps.
+3059 were born in the same camp vs 12872 who were born in different camps.
     
 d)  How many subjects were in the same vs. different camps during the
     interviews?
@@ -143,25 +154,129 @@ m_dyads$dyadcamp <- paste(pmin(m_dyads$camp1, m_dyads$camp2),
 m_dyads$dyadsamecamp <- ifelse(m_dyads$camp1 == m_dyads$camp2, 1, 0)
 table(m_dyads$dyadsamecamp)
 ```
-6215 were interviewed in the same camp vs 17656 who were interviewed in different camps.
+4271 were interviewed in the same camp vs 11660 who were interviewed in different camps.
     
 
 ```{=html}
 <!-- -->
 ```
+```{r}
+m_dyadsknowledge <- m_dyads
+nplants <- ncol(m_plants) - 1
+nindiv <- nrow(m_plants)
+ndyads <- nrow(m_dyads)
+
+#replicate lines to match number of shared traits per dyad (=plant number)
+m_dyadsknowledge <- m_dyadsknowledge[rep(1:ndyads, each = nplants), ]
+
+#create plant knowledge column in m_dyadsknowledge file
+#repeat=  number of_plants; times = nymber of_dyads
+m_dyadsknowledge$plant <- rep(1:nplants, times = ndyads)
+
+#create a file with plant knowledge and shared plant knowledge
+#make a file with id and plant
+m_plants2 <- m_plants[rep(1:nindiv, each = nplants), ]
+#but only want the id column
+m_plants2 <- subset(m_plants2, select = id)
+#change it to id1
+colnames(m_plants2)[1] <- "id1"
+#add plant column
+m_plants2$plant <- rep(1:nplants, times = nindiv)
+
+#create a plant knowledge column
+#transpose whole m.plant file into single column of plant knowledge
+#but first exclude the columns that are not about plant knowledge
+m_plants3 <- subset(m_plants, select = -c(id))
+m_plants2$know <- c(t(m_plants3))
+
+#merge_dyads and plant file
+#first include id1 knowledge
+m_dyadsknowledge <- merge(m_dyadsknowledge, m_plants2, by = c("id1", "plant"))
+#reorder by id
+m_dyadsknowledge <- m_dyadsknowledge[order(m_dyadsknowledge$id1, m_dyadsknowledge$id2), ]
+#id1 knowledge: change name from know to know1
+index <- grep("^know$", colnames(m_dyadsknowledge))
+colnames(m_dyadsknowledge)[index] <- "know1"
+
+#then id2 knowledge
+#change column names to allow proper matching
+colnames(m_plants2)[1] <- "id2"
+colnames(m_plants2)[3] <- "know2"
+m_dyadsknowledge <- merge(m_dyadsknowledge, m_plants2, by = c("id2", "plant"))
+
+#reorder columns and rows (I attempted to make this robust to changes I make avobe)
+index <- grep("^dyadid$", colnames(m_dyadsknowledge))
+cols <- ncol(m_dyadsknowledge)
+m_dyadsknowledge <- m_dyadsknowledge[c(3, 1, index, 4:(index - 1),
+    (index + 1):(cols - 2), 2, cols - 1, cols)]
+m_dyadsknowledge <- m_dyadsknowledge[order(m_dyadsknowledge$id1, m_dyadsknowledge$id2), ]
+m_dyadsknowledge$shared <- ifelse(m_dyadsknowledge$know1 == 1 & m_dyadsknowledge$know2 == 1, 1, 0)
+
+index <- grep("^dyadid$", colnames(m_dyads))
+cols <- ncol(m_dyads)
+m_dyads <- m_dyads[c(1, 2, index, 3:(index - 1),
+    (index + 1):cols)]
+m_dyads <- m_dyads[order(m_dyads$id1, m_dyads$id2), ]
+
+#factorize
+for(i in c(1:14, 16:18, 20)){
+  m_dyads[, i] <- as.factor(m_dyads[, i])
+  m_dyadsknowledge[, i] <- as.factor(m_dyadsknowledge[, i])
+}
+#releveling
+m_dyads$dyadagegroup <- relevel(m_dyads$dyadagegroup, ref = "other")
+m_dyads$dyadsex <- relevel(m_dyads$dyadsex, ref = "FM")
+m_dyadsknowledge$dyadagegroup <- relevel(m_dyadsknowledge$dyadagegroup, ref = "other")
+m_dyadsknowledge$dyadsex <- relevel(m_dyadsknowledge$dyadsex, ref = "FM")
+```
+
 4)  Total score Assuming (incorrectly) that the data points are
     independent, we can define 'total score' (between 0 and 31) as the
     sum of shared knowledge by each dyad. Is there a difference in total
     score as a function of dyadic:
+```{r message=FALSE}
+temp <- vector()
+for(id in m_dyads$dyadid){
+  temp <- append(temp, sum(m_dyadsknowledge[m_dyadsknowledge$dyadid == id, 25]))
+}
+m_dyads$totalscore <- temp
+```
+    
 
 ```{=html}
 <!-- -->
 ```
 a)  Age? (define it as young, old, or others)
+```{r}
+lm_1age <- lm(totalscore ~ dyadagegroup, data = m_dyads)
+summary(lm_1age)
+```
+This indicates that dyads where both people are old tend to share more knowledge about plants, whereas dyads with two young members share less knowledge, both in comparison to all other dyads. Both of these effects are significant.
+
 b)  Sex? (MM, MF, FF)
+```{r}
+lm_1sex <- lm(totalscore ~ dyadsex, data = m_dyads)
+summary(lm_1sex)
+```
+This indicates that dyads with two males share more knowledge and dyads with two females share less, both in comparison to mixed sex dyads. Both of these effects are quite weak, but significant.
+
 c)  Camp? (define it as same vs different camp)
+```{r}
+lm_1camp <- lm(totalscore ~ dyadsamecamp, data = m_dyads)
+summary(lm_1camp)
+```
+This indicates that dyads where both members were interviewed at the same camp share less knowledge than those interviewed at different camps. This very weak effect is significant (though less so than previous effects). Interesting here is that I would have expected the opposite effect.
+
 d)  Birthplace? (same or different) Under that wrong assumption, which
     tests would you select? Why? Run this test for dyadic sex.
+```{r}
+lm_1born <- lm(totalscore ~ dyadsameborn, data = m_dyads)
+summary(lm_1born)
+```
+This indicates that dyads whose members were born in the same camp share less knowledge than those born in different camps. Just like above, this effect is very weak, and though significant, less so than other effects. And once again, I am surprised by the effect going the opposite way from what I expected.
+
+I don't know what test to use.. I would just compare my models using the R-squared values. Sex is the best one of the models above according to that.
+
 
 ```{=html}
 <!-- -->
@@ -174,14 +289,43 @@ d)  Birthplace? (same or different) Under that wrong assumption, which
 <!-- -->
 ```
 a)  Age
+```{r}
+lm_2age <- glm(shared ~ dyadagegroup, data = m_dyadsknowledge, family = binomial)
+summary(lm_2age)
+```
+This indicates that dyads where both members are old are more likely to share knowledge about a plant, and dyads with two young members are less likely to share that knowledge, both in comparison to all other dyads.
+
 b)  Sex
+```{r}
+lm_2sex <- glm(shared ~ dyadsex, data = m_dyadsknowledge, family = binomial)
+summary(lm_2sex)
+```
+This indicates that dyads with two males are more likely to share knowledge and dyads with two females are less likely to share it, both in comparison to mixed sex dyads.
+
 c)  Camp
+```{r}
+lm_2camp <- glm(shared ~ dyadsamecamp, data = m_dyadsknowledge, family = binomial)
+summary(lm_2camp)
+```
+This indicates that dyads where both members were interviewed at the same camp are less likely to share knowledge than those interviewed at different camps. Just like in the first set of models, the effect goes the opposite way from what I expected but is significant, though once again less so than age and sex.
+
 d)  Birthplace
+```{r}
+lm_2born <- glm(shared ~ dyadsameborn, data = m_dyadsknowledge, family = binomial)
+summary(lm_2born)
+```
+This indicates that dyads whose members were born in the same camp are less likely to share knowledge than those born in different camps. Just like previously, this effect is very weak, and though significant, less so than other effects. And once again the effect goes the opposite way from what I expected.
+
 e)  A multiplicative model with age, sex and their interaction
     (age\*sex) is the interaction significant? Paste the optimised model
     output
+```{r}
+lm_2multi <- glm(shared ~ dyadagegroup * dyadsex, data = m_dyadsknowledge, family = binomial)
+lm_2multiopti <- step(lm_2multi)
+summary(lm_2multiopti)
+```
+Since the interactions between being a young-young dyad and sex are significant (negative effect for FF and positive effect for MM), the interaction term is not removed, despite the old-old dyad / sex interaction not being significant.
 
-  Paste the outputs and interpret each result
 
 6)  Mixed-effects modelling
 
@@ -192,11 +336,36 @@ a)  Which random factor should be included in every analysis? Pick just
     that one and use it in all analyses. Controlling for random
     intercept effects only, run a mixed effects logistic regression
     model of shared knowledge on:
+    (The sex model had the lowest AIC in the simple glm, so I will use that one)
 b)  Age
+```{r}
+lm_3age <- glmer(shared ~ dyadagegroup + (1 | dyadsex), data = m_dyadsknowledge, family = binomial)
+summary(lm_3age)
+```
+
 c)  Sex
+```{r}
+lm_3sex <- glmer(shared ~ dyadsex + (1 | dyadagegroup), data = m_dyadsknowledge, family = binomial)
+summary(lm_3sex)
+```
+
 d)  Birthplace
+```{r}
+lm_3born <- glmer(shared ~ dyadsameborn + (1 | dyadsex), data = m_dyadsknowledge, family = binomial)
+summary(lm_3born)
+```
+
 e)  Camp
+```{r}
+lm_3camp <- glmer(shared ~ dyadsamecamp + (1 | dyadsex), data = m_dyadsknowledge, family = binomial)
+summary(lm_3camp)
+```
+
 f)  A multiplicative model including age, sex and interaction (age\*sex)
+```{r}
+lm_3multi <- glmer(shared ~ dyadagegroup * dyadsex + (1 | dyadsex), data = m_dyadsknowledge, family = binomial)
+summary(lm_3multi)
+```
 
 ```{=html}
 <!-- -->
@@ -205,7 +374,12 @@ f)  A multiplicative model including age, sex and interaction (age\*sex)
     regression and mixed effects logistic regression, and discuss the
     effect of age, sex, camp and birthplace on shared plant knowledge.
     Which factor(s) is/are the most important?
+    
+First of all, I noticed that in all used methods, the effects remained the same in regards to their relative strength, their direction and their relative significance. However, looking at the scoring of the models, the last set (including the random effect) was best overall, with the age model being the best simple model (lowest AIC), being beaten only by the age*sex model. And that is despite the fact that I was unable to include a random effect there, since I picked sex for that, and it was already included in this model.
+The effects are as follows:
+- Age: young dyads share less knowledge and old dyads more knowledge than general dyads. This is probably mostly because older people generally have a larger knowledge of plants, so there will be more overlap between two people the older they both are.
+- Sex: Dyads where both members are male share more knowledge than FM dyads, and FF dyads even less than they do. This seems like it might be an effect of females generally having less knowledge about plants, but my models don't investigate that.
+- Camp: Surprisingly, dyads where both members were interviewed at the same camp share less knowledge than others. This effect might be weak, but what it mostly shows me (especially in combination with the next effect) is that there is definitely no "segregation" of knowledge between camps, where each camp would have a set of knowledge that is very different from that of other camps.
+- Birthplace: Once again, I am surürised that dyads born in the same camp share less knowledge than those born in different camps. This effect is also very weak, and combines with the effect above in my interpretation of it.
 
-```{r}
-
-```
+The most important factor considered in this study is apparently the dyadic sex, closely followed by the dyadic age. Both of these effects might simply be based on older respectively male individuals knowing more plants than younger respectively female individuals tough.
