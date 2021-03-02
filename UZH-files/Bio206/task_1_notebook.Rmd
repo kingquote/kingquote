@@ -1,8 +1,10 @@
 ---
-title: "Report 1: Shared plant knowledge"
-output: html_notebook
-editor_options: 
-  markdown: 
+title: 'Report 1: Shared plant knowledge'
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  markdown:
     wrap: 72
 ---
 ```{r}
@@ -25,7 +27,7 @@ for(i in 1 : ncol(m_participants)){
   m_participants <- m_participants[m_participants[, i] != "NA",]
 }
 m_plants <- m_plants[m_plants$id %in% m_participants$id,]
-#I know you daid not to remove individuals with NAs, but they were causing problems later, so this step made sense to me.
+#I know you said not to remove individuals with NAs, but they were causing problems later, so this step made sense to me.
 m_participants$age <- ifelse(m_participants$age == "5-10", "05-10", m_participants$age)
 ```
 
@@ -380,6 +382,6 @@ The effects are as follows:
 - Age: young dyads share less knowledge and old dyads more knowledge than general dyads. This is probably mostly because older people generally have a larger knowledge of plants, so there will be more overlap between two people the older they both are.
 - Sex: Dyads where both members are male share more knowledge than FM dyads, and FF dyads even less than they do. This seems like it might be an effect of females generally having less knowledge about plants, but my models don't investigate that.
 - Camp: Surprisingly, dyads where both members were interviewed at the same camp share less knowledge than others. This effect might be weak, but what it mostly shows me (especially in combination with the next effect) is that there is definitely no "segregation" of knowledge between camps, where each camp would have a set of knowledge that is very different from that of other camps.
-- Birthplace: Once again, I am surürised that dyads born in the same camp share less knowledge than those born in different camps. This effect is also very weak, and combines with the effect above in my interpretation of it.
+- Birthplace: Once again, I am surprised that dyads born in the same camp share less knowledge than those born in different camps. This effect is also very weak, and combines with the effect above in my interpretation of it.
 
 The most important factor considered in this study is apparently the dyadic sex, closely followed by the dyadic age. Both of these effects might simply be based on older respectively male individuals knowing more plants than younger respectively female individuals tough.
