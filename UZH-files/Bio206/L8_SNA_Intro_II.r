@@ -1,5 +1,8 @@
 #Lecture 8 Intro II
 
+library("readxl")
+try(setwd(dirname(rstudioapi::getActiveDocumentContext()$path)), silent = TRUE)
+
 #Example: network from edgelist
 edge2 <- matrix(c("A", "B", "A", "C", "A", "G", "C",
                   "D", "C", "F", "E", "F", "E", "G"),
@@ -41,12 +44,13 @@ net2 %v% "degrees"
 
 #edge attributes
 #weights
-adj4 <- matrix(c(0,10,0,5,0,0,6,0,0,1,1,1,0,8,1,0), byrow=T, nrow=4)
+adj4 <- matrix(c(0, 10, 0, 5, 0, 0, 6, 0, 0,
+      1, 1, 1, 0, 8, 1, 0), byrow = T, nrow = 4)
 colnames(adj4) <- c("A", "B", "C", "D")
 rownames(adj4) <- c("A", "B", "C", "D")
 #now you need to use directed network so that weights are not divided by 2!!
 net4 <- network(adj4, matrix.type = "adjacency", directed = T,
-                ignore.eval=F, names.eval="weights")
+                ignore.eval = F, names.eval = "weights")
 summary(net4)
 
 #to see adjacency matrix
@@ -55,8 +59,8 @@ as.sociomatrix(net4)
 as.sociomatrix(net4, "weights")
 
 #plotting with weights
-gplot(net4, vertex.cex=2, vertex.col="red", 
-      displaylabels=T, gmode = "graph",
+gplot(net4, vertex.cex = 2, vertex.col = "red",
+      displaylabels = T, gmode = "graph",
       edge.lwd = net4 %e% "weights")
 list.edge.attributes(net4)
 get.edge.attribute(net4, "weights")
@@ -64,26 +68,26 @@ net4 %e% "weights"
 
 #creating weighted network from edge list
 #importing from Excel
-edgelist1
+edgelist1 <- read_excel("edgelist1.xlsx")
 
 #aggregating rows
-edge6 <- aggregate(list(weights=rep(1,nrow(edgelist1))), edgelist1, length)
+edge6 <- aggregate(list(weights = rep(1, nrow(edgelist1))), edgelist1, length)
 edge6
 
 #creating weighted network; notice matrix type
-net.weights <- network(edge6, matrix.type = "edgelist", directed=F,
-                       ignore.eval = FALSE, names.eval="weights")
-summary(net.weights)
+net_weights <- network(edge6, matrix.type = "edgelist", directed = F,
+                       ignore.eval = FALSE, names.eval = "weights")
+summary(net_weights)
 
 #see node attributes
-list.vertex.attributes(net.weights)
+list.vertex.attributes(net_weights)
 #see edge attributes
-list.edge.attributes(net.weights)
+list.edge.attributes(net_weights)
 
 #see edge weights
-net.weights %e% "weights"
-as.sociomatrix(net.weights, "weights")
-as.matrix(net.weights, matrix.type="edgelist")
+net_weights %e% "weights"
+as.sociomatrix(net_weights, "weights")
+as.matrix(net_weights, matrix.type = "edgelist")
 
 #converting between edgelist and adjacency
 adj4
@@ -93,13 +97,13 @@ adj4 <- symmetrize(adj4, return.as.edgelist = F)
 #filtering by gender
 #net2 has gender info
 net2
-gplot(net2, gmode = "graph", displaylabels=T)
+gplot(net2, gmode = "graph", displaylabels = T)
 #inducedSubgraph to filter, 'which' to define selected values
 net2males <- get.inducedSubgraph(net2, which(net2 %v% "gender" == "M"))
 summary(net2males)
 #new adjacency matrix only for males
-net2males[,]
-gplot(net2males, gmode="graph", displaylabels = T)
+net2males[, ]
+gplot(net2males, gmode = "graph", displaylabels = T)
 
 #filter by degree
 net2 %v% "degrees"
@@ -107,7 +111,7 @@ net2deg <- get.inducedSubgraph(net2, which(net2 %v% "degrees" > 1))
 gplot(net2deg, gmode = "graph", displaylabels = T)
 
 #removing isolates
-summary(ICTS_G10, print.adj=F)
+summary(ICTS_G10, print.adj = F)
 components(ICTS_G10)
 plot(ICTS_G10)
 
@@ -123,7 +127,7 @@ delete.vertices(ICTScoll, isolates(ICTScoll))
 plot(ICTScoll)
 
 #Example: filtering by weight
-summary(DHHS, print.adj=F)
+summary(DHHS, print.adj = F)
 DHHS %e% "collab"
 table(DHHS %e% "collab")
 
@@ -132,14 +136,14 @@ DHHSfilt <- DHHS
 DHHSfilt %e% "collab"
 
 #first create new sociomatrix, with collab as weight values
-d.val <- as.sociomatrix(DHHSfilt, "collab")
+d_val <- as.sociomatrix(DHHSfilt, "collab")
 #now using thresh to filter which edges to show
-gplot(d.val, gmode="graph", displayisolates = F, thresh = 3)
+gplot(d_val, gmode = "graph", displayisolates = F, thresh = 3)
 
 #create network in igraph
 #you may need code from previous lecture
 adj
-graph1 <- graph.adjacency(adj, mode="undirected")
+graph1 <- graph.adjacency(adj, mode = "undirected")
 graph1
 edge2
 graph2 <- graph.edgelist(edge2, directed = F)
@@ -147,9 +151,9 @@ graph2
 
 #to create node names in igraph
 #note: no need to run it in this example, as names already exist
-V(graph1)$name <- c("A", "B", "C", "D") 
+V(graph1)$name <- c("A", "B", "C", "D")
 #to create weight attribute
-E(graph1)$weights <- c(1,1,10,4,5,2,1)
+E(graph1)$weights <- c(1, 1, 10, 4, 5, 2, 1)
 mean(E(graph1)$weights)
 summary(graph1)
 
@@ -162,36 +166,36 @@ graph1 <- asIgraph(graph1)
 #back to sna
 #Visualisation
 data(Moreno)
-gplot(Moreno,mode="circle",vertex.cex=1.5,gmode="graph")
-gplot(Moreno,mode="fruchtermanreingold",vertex.cex=1.5,gmode="graph")
-gplot(Moreno,mode="random",vertex.cex=1.5,gmode="graph")
+gplot(Moreno, mode = "circle", vertex.cex = 1.5, gmode = "graph")
+gplot(Moreno, mode = "fruchtermanreingold", vertex.cex = 1.5, gmode = "graph")
+gplot(Moreno, mode = "random", vertex.cex = 1.5, gmode = "graph")
 
 #in igraph
 detach(package:sna)
 library(igraph)
 library(intergraph)
-#convert Bali to iBali
-iBali <- asIgraph(Bali)
+#convert Bali to i_bali
+i_bali <- asIgraph(Bali)
 
-plot(iBali, layout=layout_in_circle, main="Circle")
-plot(iBali,layout=layout_randomly, main="Random")
-plot(iBali,layout=layout_with_fr, main="fruchtermanreingold")
+plot(i_bali, layout = layout_in_circle, main = "Circle")
+plot(i_bali, layout = layout_randomly, main = "Random")
+plot(i_bali, layout = layout_with_fr, main = "fruchtermanreingold")
 
-#back to sna, notice now we use file Bali instead of iBali
+#back to sna, notice now we use file Bali instead of i_bali
 detach(package:igraph)
 library(sna)
 
 #plotting vertices with role as colours
-plot(Bali, vertex.col= "role", edge.col="grey50", 
-     vertex.cex=1.5, displaylabels=T, label.pos=5)
+plot(Bali, vertex.col = "role", edge.col = "grey50",
+     vertex.cex = 1.5, displaylabels = T, label.pos = 5)
 
 #node size as degree
 #create vector with degrees and use it in parameter vertex.cex
-degBali <- degree(Bali, gmode="graph")
-gplot(Bali, usearrows = F, vertex.cex=0.2*degBali, displaylabels = T,
-      label=Bali %v% "role")
+deg_bali <- degree(Bali, gmode = "graph")
+gplot(Bali, usearrows = F, vertex.cex = 0.2 * deg_bali, displaylabels = T,
+      label = Bali %v% "role")
 
 #plot weighted network links with edge width
-plot(Bali, usearrows = F, vertex.cex=0.2*degBali, label.pos=5, 
-     vertex.col = "slateblue", displaylabels = T, 
+plot(Bali, usearrows = F, vertex.cex = 0.2 * deg_bali, label.pos = 5,
+     vertex.col = "slateblue", displaylabels = T,
      edge.lwd = (Bali %e% "IC")^1.5)
