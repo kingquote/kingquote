@@ -121,10 +121,10 @@ isolates(ICTS_G10)
 length(isolates(ICTS_G10))
 
 #create a copy first; delete.vertices cannot create a new object
-ICTScoll <- ICTS_G10
-class(ICTScoll)
-delete.vertices(ICTScoll, isolates(ICTScoll))
-plot(ICTScoll)
+icts_coll <- ICTS_G10
+class(icts_coll)
+delete.vertices(icts_coll, isolates(icts_coll))
+plot(icts_coll)
 
 #Example: filtering by weight
 summary(DHHS, print.adj = F)
@@ -132,16 +132,17 @@ DHHS %e% "collab"
 table(DHHS %e% "collab")
 
 #create copy of file
-DHHSfilt <- DHHS
-DHHSfilt %e% "collab"
+dhhs_filt <- DHHS
+dhhs_filt %e% "collab"
 
 #first create new sociomatrix, with collab as weight values
-d_val <- as.sociomatrix(DHHSfilt, "collab")
+d_val <- as.sociomatrix(dhhs_filt, "collab")
 #now using thresh to filter which edges to show
 gplot(d_val, gmode = "graph", displayisolates = F, thresh = 3)
 
 #create network in igraph
 #you may need code from previous lecture
+library("igraph")
 adj
 graph1 <- graph.adjacency(adj, mode = "undirected")
 graph1
@@ -165,6 +166,7 @@ graph1 <- asIgraph(graph1)
 
 #back to sna
 #Visualisation
+library("sna")
 data(Moreno)
 gplot(Moreno, mode = "circle", vertex.cex = 1.5, gmode = "graph")
 gplot(Moreno, mode = "fruchtermanreingold", vertex.cex = 1.5, gmode = "graph")
