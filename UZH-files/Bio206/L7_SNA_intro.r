@@ -47,7 +47,7 @@ gd <- geodist(comp1)
 max(gd$gdist)
 mean(gd$gdist)
 
-#clustering
+#transitivity (measure of clustering)
 gtrans(Moreno)
 
 #node attributes
@@ -56,7 +56,7 @@ Moreno %v% "vertex.names"
 
 #plotting
 plot(Moreno, vertex.col = Moreno %v% "gender", vertex.cex = 2)
-plot(Moreno, vertex.col = c("blue", "red")[Moreno %v% "gender"],
+plot(Moreno, vertex.col = c("pink", "lightblue")[Moreno %v% "gender"],
      vertex.cex = 2, displaylabels = T)
 
 #Example: creating a network
@@ -73,3 +73,23 @@ class(net1)
 #gplot as undirected
 gplot(net1, gmode = "graph", displaylabels = T)
 summary(net1)
+
+
+sym <- matrix(c(0, 1, 0, 1, 0, 1, 0, 1, 0), byrow = T, nrow = 3)
+asym <- matrix(c(0, 1, 0, 0, 0, 1, 0, 0, 0), byrow = T, nrow = 3)
+symdir <- network(sym, matrix.type = "adjacency", directed = T)
+symundir <- network(sym, matrix.type = "adjacency", directed = F)
+asymdir <- network(asym, matrix.type = "adjacency", directed = T)
+asymundir <- network(asym, matrix.type = "adjacency", directed = F)
+
+summary(symdir)
+summary(symundir)
+#difference: 4 edges vs 2 edges
+
+summary(asymdir)
+summary(asymundir)
+#difference: density 0.333 vs 0.666
+
+gplot(asymdir, gmode = "digraph", displaylabels = T)
+gplot(asymundir, gmode = "graph", displaylabels = T)
+#difference: arrows vs no arrows
