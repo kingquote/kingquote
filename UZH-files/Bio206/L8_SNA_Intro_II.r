@@ -140,6 +140,7 @@ d_val <- as.sociomatrix(dhhs_filt, "collab")
 #now using thresh to filter which edges to show
 gplot(d_val, gmode = "graph", displayisolates = F, thresh = 3)
 
+
 #create network in igraph
 #you may need code from previous lecture
 library("igraph")
