@@ -85,3 +85,19 @@ table(coreness(i_dhhs))
 plot(i_dhhs, vertex.label.cex = 0.8, vertex.color = coreness(i_dhhs),
      vertex.label = coreness(i_dhhs))
 #13 is the largest k-core, there are 24 of it
+
+#his version:
+#k-core: more complex example; always in igraph
+
+summary(i_dhhs)
+#here we are selecting only collab > 2 (edge property) to include only
+#collaborators but coreness is still calculated based on degrees
+i_dhhs2 <- subgraph.edges(i_dhhs,E(i_dhhs)[collab > 2])
+summary(i_dhhs2)
+plot(i_dhhs2, gmode = "graph")
+
+#calculating coreness
+coreness <- graph.coreness(i_dhhs2)
+coreness
+V(i_dhhs2)$color <- coreness
+plot(i_dhhs2, vertex.col = coreness, vertex.label = coreness)
