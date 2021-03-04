@@ -1,5 +1,7 @@
 #Lecture 8 Intro II
-
+library(statnet.common)
+library(sna)
+library(UserNetR)
 library("readxl")
 try(setwd(dirname(rstudioapi::getActiveDocumentContext()$path)), silent = TRUE)
 
