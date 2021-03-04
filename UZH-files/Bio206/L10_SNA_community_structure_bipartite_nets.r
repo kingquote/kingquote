@@ -1,3 +1,5 @@
+library(UserNetR)
+library(igraph)
 
 #community detection
 #modularity
@@ -24,6 +26,7 @@ membership(cw)
 table(membership(cw))
 plot(cw, i_moreno)
 plot(cw, i_moreno, vertex.label = V(i_moreno)$gender)
+cwface <- cluster_walktrap(Facebook)
 
 #comparing communities to attributes
 table(membership(cw), V(i_moreno)$gender)
@@ -68,7 +71,7 @@ plot(iaffil, vertex.color = colors[V(iaffil)$type + 1],
      vertex.size = 10, vertex.label.degree = 0,
      vertex.label.dist = 4, vertex.label.cex = 0.9, layout = lay)
 
-#from edge list into affiliation network 
+#from edge list into affiliation network
 affedge <- data.frame(rbind(c("S1", "c1"),
                             c("S2", "c1"),
                             c("S2", "c2"),
