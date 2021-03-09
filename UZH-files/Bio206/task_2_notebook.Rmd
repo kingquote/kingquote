@@ -1,54 +1,220 @@
 ---
-title: "Report 2: Network analysis of a hunter-gatherer social network"
-output: html_notebook
+title: 'Report 2: Network analysis of a hunter-gatherer social network'
+output:
+  html_document:
+    df_print: paged
 ---
 
-Report 2. Network analysis of a hunter-gatherer social network.
+```{r}
+##Init
+library("readxl")
+library("sna")
+try(setwd(dirname(rstudioapi::getActiveDocumentContext()$path)), silent = TRUE)
+#not necessary in VSCode, just let it error out there
+```
+
 Download motes.xlxs with data on social interactions from a real population of hunter-gatherers. It contains ID1 and ID2 from each dyad, and dyadic weights. 
 Import this dataset into R to produce an undirected network (using sna/network), including the information on edge weights. 
 (Note: when importing, ALREADY change class of ID1 and ID2 to character, otherwise network cannot be created. Weights should be integers or numeric,).
-1) Visualisation (starting with sna/network):
+
+```{r}
+##Data Ingest
+net <- read_excel("motes.xlsx")
+net$ID1 <- as.character(net$ID1)
+net$ID2 <- as.character(net$ID2)
+net1 <- network(net, matrix.type = "edgelist", directed = F,
+                ignore.eval = F, names.eval = "weights")
+good <- max(get.edge.attribute(net1, "weights")) ==
+  max(net$weights) #true means weights are correct
+if(good) net <- net1
+```
+
+
+1) Visualization (starting with sna/network):
 a) Plot the network (in undirected or ‘graph’ mode, here and everywhere in this report)
-b) Now plot it again, but with edges reflecting their weights (hint: multiply the term in edge.lwd by 0.05 for better visualisation)
+```{r}
+gplot(net, vertex.cex = 2, vertex.col = "red",
+      displaylabels = T, gmode = "graph")
+```
+
+b) Now plot it again, but with edges reflecting their weights (hint: multiply the term in edge.lwd by 0.05 for better visualization)
+```{r}
+gplot(net, vertex.cex = 2, vertex.col = "red",
+      displaylabels = T, gmode = "graph",
+      edge.lwd = (net %e% "weights") * 0.05)
+```
+
 
 2) Main network properties: calculate 
 a) Size
-b) Density 
-c) Number of components 
-d) Diameter 
+```{r}
+network.size(net)
+```
+
+b) Density
+```{r}
+gden(net)
+```
+
+c) Number of components
+```{r}
+components(net)
+```
+
+d) Diameter
+```{r}
+net_gd <- geodist(net)
+max(net_gd$gdist)
+```
+
 e) Mean path length
+```{r}
+mean(net_gd$gdist)
+```
+
 f) Transitivity
+```{r}
+gtrans(net)
+```
+
 
 3) Node features: calculate
 a) Mean degree
+```{r}
+meandeg <- mean(degree(net, gmode = "graph"))
+meandeg
+```
+
 b) Plot a histogram with degree distribution
+```{r}
+hist(degree(net, gmode = "graph"))
+```
+
 
 4) Centrality measures
 a) Make a table with the three centrality measures for each subject
+```{r}
+centra <- data.frame(name = net %v% "vertex.names",
+  degree = degree(net, gmode = "graph"))
+
+centra$closeness <- closeness(net, gmode  = "graph")
+
+centra$betweenness <- betweenness(net, gmode = "graph")
+
+centra <- centra[order(-centra$degree,
+  -centra$closeness, -centra$betweenness), ]
+```
+
 b) Who is/are the most central individual(s)?
+```{r}
+centra <- centra[order(-centra$degree), ]
+print("Top 5 by degree:")
+head(centra$name)
+
+centra <- centra[order(-centra$closeness), ]
+print("Top 5 by closeness:")
+head(centra$name)
+
+centra <- centra[order(-centra$betweenness), ]
+print("Top 5 by betweenness:")
+head(centra$name)
+```
+
 c) Briefly discuss why centrality measures did/did not differ in this network
 (NOTE: there may be difference between the name (a character, but which in this example is also a number: “1”, “2”) and number of a subject. 
 Subject name, which may be used as labels in plots etc, follows a character sequence: “0”, “1”, “10”, “11”…
 Subject number, which is used for functions, follow sequence 1, 2 , 3, 4. This will be apparent when you producing the tables, calculate centralities etc). 
 
+I avoided the problem with names by including them as a column in the table. Therefore I can see that the vertex with highest betweenness (vertex 51) is the one connection point between the main group and the smaller clique next to it. I also spotted vertex 2 in the graph and it, too is close to the clique. The vertices that have high degree and closeness values on the other hand are right in the center of that big group. The fact that vertex 51 and some other vertices close to it are a bottleneck for all connections between any vertice from the main group to the clique means, that they are scored much higher according to betweenness, while the other two scoring methods are less influenced by the presence of the clique.
+
 5) Plot network identifying any cutpoints
 (NOTE: again, be aware of distinction between name (shown in the plot as the label) and number (output of function cutpoints)). 
+```{r}
+cuts <- cutpoints(net, mode = "graph", return.indicator = T)
+gplot(net, gmode = "graph", vertex.col = cuts + 1, displaylabels = T)
+```
+
+Not surprising vertex 51 scored high in betweenness...
 
 6) Coreness: 
 (NOTE: don’t forget to switch to igraph, and to create an igraph object with package Intergraph) 
+```{r}
+detach(package:sna)
+library(igraph)
+library(intergraph)
+inet <- asIgraph(net)
+```
+
 a) What is the largest and smallest coreness values in this network?
+```{r}
+coreness <- graph.coreness(inet)
+max(coreness)
+min(coreness)
+```
+
 b) Create a plot where each k-core is shown with a different colour
 (NOTE: you will need to define an attribute V(yournetwork)$colour for this to work! See lecture code)
+```{r}
+#This note is incorrect. A vertex attribute is not necessary to do this.
+#Someone already noted that that line was not necessary during the lecture.
+plot(inet, vertex.label.cex = 0.8, vertex.color = graph.coreness(inet),
+     vertex.label = graph.coreness(inet))
+```
+
 
 7) Community detection: 
 a) Detect communities using those two algorithms:
 cluster_walktrap()
 cluster_louvain()
 and plot the two networks with the identified subgroups
+```{r}
+inet_cw <- cluster_walktrap(inet)
+plot(inet_cw, inet)
+
+inet_cl <- cluster_louvain(inet)
+plot(inet_cl, inet)
+```
+
+
 b) Based on this particular example, do you think the algorithms may produce different classifications?
+
+They do produce somewhat different results, even in this example. Though it has to be said that the main difference is that the walktrap algorithm seems to do finer divisions than the louvain algorithm, leading to the walktrap clusters mostly being subsets of louvain clusters, with rather few exceptions (eg vertex number 30 and 36 are in a single cluster in inet_cw but in different ones in inet_cl)
 
 8) Model networks: 
 a) Create a random graph network with same size and density as your real network (with p=density of the real network, or m=total number of edges of the real network) and a small-world network, with nei = (mean degree of real network)/2, and p (randomness) = 0.05.
-b) Make a table comparing diameter, mean degree and transitivity in the real, random graph, and the small-world network 
-c) Plot the distribution of degrees and transitivity of all nodes in the four networks  
+```{r}
+verti <- gorder(inet)
+edg <- gsize(inet)
+
+rand <- erdos.renyi.game(verti, edg, type = "gnm")
+
+smol <- watts.strogatz.game(dim = 1, size = verti, nei = meandeg / 2, p = 0.05)
+```
+
+b) Make a table comparing diameter, mean degree and transitivity in the real, random graph, and the small-world network
+```{r}
+diams <- c(diameter(inet), diameter(rand), diameter(smol))
+means <- c(meandeg, mean(degree(rand)), mean(degree(smol)))
+transi <- c(transitivity(inet), transitivity(rand), transitivity(smol))
+
+tab <- data.frame(network = c("real", "random", "small-world"),
+  diameter = diams,
+  mean_degree = means,
+  transitivity = transi)
+tab
+```
+
+c) Plot the distribution of degrees and transitivity of all nodes in the four networks
+```{r}
+plot(degree.distribution(inet), type = "b", main = "real")
+plot(degree.distribution(rand), type = "b", main = "random")
+plot(degree.distribution(smol), type = "b", main = "small-world")
+
+boxplot(transitivity(inet, type = "local"), main = "real")
+boxplot(transitivity(rand, type = "local"), main = "random")
+boxplot(transitivity(smol, type = "local"), main = "small-world")
+```
+
 d) What do you conclude? Is the real shared knowledge similar or more similar to any of the model networks? 
+
+Neither model seems all that great to me. Especially the degree distribution is way off, and the mean transitivity values are all wrong, though to be fair the real network has a wide distribution here. Going by degree distribution, the random model is a bit better, but going by transitivity and even diameter, the small world model is closer to the real situation. If I had to pick one, I'd choose the small world network, but really neither one is very satisfying.
